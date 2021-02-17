@@ -1,23 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
-
-import 'package:postmasterdboy/Components/toast_utils.dart';
 import 'package:postmasterdboy/Components/animate.dart';
 
-//import 'package:http/http.dart' as http;
-//import 'package:flutter/services.dart';
-
-//import 'package:shared_preferences/shared_preferences.dart';
-
-import 'dart:async';
-import 'dart:convert';
-
-class Login extends StatefulWidget {
+class Setpassword extends StatefulWidget {
   @override
-  _LoginState createState() => _LoginState();
+  _SetpasswordState createState() => _SetpasswordState();
 }
 
-class _LoginState extends State<Login> {
+class _SetpasswordState extends State<Setpassword> {
   var _formKey = GlobalKey<FormState>();
   final TextEditingController user_idController = TextEditingController();
   final TextEditingController user_passController = TextEditingController();
@@ -50,19 +39,36 @@ class _LoginState extends State<Login> {
                 Container(
                   margin: new EdgeInsets.only(top: 1, right: 35, left: 35),
                   child: Image(
-                    image: AssetImage('assets/images/logins.png'),
+                    image: AssetImage('assets/images/setpass.jpg'),
                     height: 266.0,
                     width: 266.0,
                   ),
                 ),
                 Center(
                     child: Container(
-                  margin: EdgeInsets.only(bottom: 25.0),
-                  child: Text(
-                    "Add yout details to login",
-                    style: TextStyle(
-                      fontFamily: 'Roboto',
-                      fontSize: 18,
+                  margin: EdgeInsets.only(bottom: 5.0),
+                  child: Opacity(
+                    opacity: 0.7,
+                    child: Text(
+                      "Set Password",
+                      style: TextStyle(
+                        fontFamily: 'Roboto',
+                        fontSize: 30,
+                      ),
+                    ),
+                  ),
+                )),
+                Center(
+                    child: Container(
+                  margin: EdgeInsets.only(bottom: 25.0, left: 25, right: 25),
+                  child: Opacity(
+                    opacity: 0.4,
+                    child: Text(
+                      "Make a strong password",
+                      style: TextStyle(
+                        fontFamily: 'Roboto',
+                        fontSize: 15,
+                      ),
                     ),
                   ),
                 )),
@@ -90,7 +96,7 @@ class _LoginState extends State<Login> {
                       border: InputBorder.none,
                       contentPadding: EdgeInsets.only(
                           left: 40, bottom: 11, top: 11, right: 15),
-                      hintText: 'Email or Phone Numbers',
+                      hintText: 'New Password',
                     ),
                   ),
                 ),
@@ -105,26 +111,25 @@ class _LoginState extends State<Login> {
                     ),
                   ),
                   child: TextFormField(
-                    controller: user_passController,
+                    controller: user_idController,
                     validator: (String value) {
                       if (value.isEmpty) {
-                        return "Please enter password.";
+                        return "Please enter valid username.";
                       }
                       /*if (!EmailValidator.validate(value)) {
                           return "Enter valid email";
                         }*/
                       //return "";
                     },
-                    cursorColor: Colors.black,
                     decoration: InputDecoration(
                       border: InputBorder.none,
                       contentPadding: EdgeInsets.only(
                           left: 40, bottom: 11, top: 11, right: 15),
-                      hintText: 'Password',
+                      hintText: 'Confirm Password',
                     ),
                   ),
                 ),
-                SizedBox(height: 25.0),
+                SizedBox(height: 20.0),
                 Container(
                   margin: const EdgeInsets.only(left: 33.0, right: 33.0),
                   padding: const EdgeInsets.all(3.0),
@@ -139,7 +144,7 @@ class _LoginState extends State<Login> {
                     child: Container(
                       margin: EdgeInsets.only(top: 15.0, bottom: 15.0),
                       child: Text(
-                        "Login",
+                        "Done",
                         style: TextStyle(
                             fontFamily: 'Roboto',
                             fontSize: 18,
@@ -148,66 +153,6 @@ class _LoginState extends State<Login> {
                     ),
                   ),
                 ),
-                SizedBox(height: 15.0),
-                Container(
-                  margin: const EdgeInsets.only(left: 33.0, right: 33.0),
-                  padding: const EdgeInsets.all(3.0),
-                  decoration: BoxDecoration(
-                    color: Colors.green[400],
-                    //border: Border.all(color: Colors.blueAccent),
-                    borderRadius: const BorderRadius.all(
-                      const Radius.circular(30.0),
-                    ),
-                  ),
-                  child: Center(
-                    child: Container(
-                      margin: EdgeInsets.only(top: 15.0, bottom: 15.0),
-                      child: Text(
-                        "Create Account",
-                        style: TextStyle(
-                            fontFamily: 'Roboto',
-                            fontSize: 18,
-                            color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ),
-                Container(
-                  child: Row(
-                    children: [
-                      Container(
-                        margin: new EdgeInsets.only(
-                            bottom: 30, top: 40.0, left: 75),
-                        child: Text(
-                          "- Forgot Password -",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              color: Color(0xFF707070), fontSize: 16.0),
-                        ),
-                      ),
-                      InkWell(
-                        onTap: () {
-                          /* Navigator.push(
-                              context, SlideLeftRoute(page: ForgotPassword()));*/
-                        },
-                        child: Container(
-                          margin: new EdgeInsets.only(
-                            bottom: 30,
-                            top: 40.0,
-                          ),
-                          child: Text(
-                            " Click Here",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: Color(0xFF27DEBF),
-                                fontSize: 16.0,
-                                fontFamily: 'Roboto'),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                )
               ],
             ),
           ),
