@@ -1,4 +1,4 @@
-package com.example.postmasterboy
+package com.example.postmasterdboy
 
 import io.flutter.embedding.android.FlutterActivity
 
