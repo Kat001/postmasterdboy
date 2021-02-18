@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:postmasterdboy/screens/available.dart';
+import 'package:postmasterdboy/screens/bankdetails.dart';
 import 'package:postmasterdboy/screens/forgotpassword.dart';
+import 'package:postmasterdboy/screens/homepage.dart';
 import 'package:postmasterdboy/screens/otpforgotpassword.dart';
 import 'package:postmasterdboy/screens/login.dart';
 import 'package:postmasterdboy/screens/otpsignup.dart';
+import 'package:postmasterdboy/screens/profile.dart';
 import 'package:postmasterdboy/screens/setforgotpassword.dart';
 import 'package:postmasterdboy/screens/setsignuppassword.dart';
 import 'package:postmasterdboy/screens/signup.dart';
+import 'package:postmasterdboy/screens/documentsupload.dart';
 import 'package:sizer/sizer.dart';
 
 void main() => runApp(Myapp());
@@ -60,7 +65,7 @@ class _MyappState extends State<Myapp> {
                 primaryColor: Color(0xFF27DEBF),
                 dividerColor: Colors.transparent,
               ),
-              home: Signup(), //Mysubscription(),
+              home: Login(), //Mysubscription(),
             );
           },
         );
