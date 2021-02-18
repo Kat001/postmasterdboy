@@ -25,8 +25,8 @@ class _HomepageState extends State<Homepage> {
   int _currentstate = 0;
   final List<Widget> _children = [
     Available(),
-    Chat(),
     Profile(),
+    Chat(),
     Information(),
   ];
   // void onTappedBar(int index) {

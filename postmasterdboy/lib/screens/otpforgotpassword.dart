@@ -4,6 +4,7 @@ import 'package:postmasterdboy/Components/customicons.dart';
 //import 'package:postmaster/Screens/SetPassword.dart';
 //import 'package:postmaster/Screens/Signup.dart';
 import 'package:postmasterdboy/Components/animate.dart';
+import 'package:postmasterdboy/screens/setforgotpassword.dart';
 
 class Otpclass extends StatefulWidget {
   @override
@@ -231,25 +232,30 @@ class _OtpclassState extends State<Otpclass> {
                     ],
                   )),
               SizedBox(height: 50.0),
-              Container(
-                margin: const EdgeInsets.only(left: 33.0, right: 33.0),
-                padding: const EdgeInsets.all(3.0),
-                decoration: BoxDecoration(
-                  color: Colors.green[400],
-                  //border: Border.all(color: Colors.blueAccent),
-                  borderRadius: const BorderRadius.all(
-                    const Radius.circular(30.0),
+              InkWell(
+                onTap: () {
+                  Navigator.push(context, SlideLeftRoute(page: Setpassword()));
+                },
+                child: Container(
+                  margin: const EdgeInsets.only(left: 33.0, right: 33.0),
+                  padding: const EdgeInsets.all(3.0),
+                  decoration: BoxDecoration(
+                    color: Colors.green[400],
+                    //border: Border.all(color: Colors.blueAccent),
+                    borderRadius: const BorderRadius.all(
+                      const Radius.circular(30.0),
+                    ),
                   ),
-                ),
-                child: Center(
-                  child: Container(
-                    margin: EdgeInsets.only(top: 15.0, bottom: 15.0),
-                    child: Text(
-                      "Next",
-                      style: TextStyle(
-                          fontFamily: 'Roboto',
-                          fontSize: 18,
-                          color: Colors.white),
+                  child: Center(
+                    child: Container(
+                      margin: EdgeInsets.only(top: 15.0, bottom: 15.0),
+                      child: Text(
+                        "Next",
+                        style: TextStyle(
+                            fontFamily: 'Roboto',
+                            fontSize: 18,
+                            color: Colors.white),
+                      ),
                     ),
                   ),
                 ),
