@@ -9,6 +9,6 @@ import 'package:postmasterdboy/Components/toast_utils.dart';
 import 'package:postmasterdboy/Components/sizes_helpers.dart';
 import 'package:postmasterdboy/screens/information.dart';
 import 'package:postmasterdboy/screens/home.dart';
-import 'package:postmasterdboy/screens/profile.dart';
+import 'package:postmasterdboy/screens/setprofile.dart';
 import 'package:postmasterdboy/screens/chat.dart';
 import 'package:postmasterdboy/Components/customicons.dart';

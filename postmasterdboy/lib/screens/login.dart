@@ -114,6 +114,9 @@ class _LoginState extends State<Login> {
                       if (value.isEmpty) {
                         return "Please enter password.";
                       }
+                      if (value.length < 8) {
+                        return "Password length must be graeter than or equal to 8.";
+                      }
                       /*if (!EmailValidator.validate(value)) {
                           return "Enter valid email";
                         }*/

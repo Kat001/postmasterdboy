@@ -1,5 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:postmasterdboy/Components/animate.dart';
+import 'package:email_validator/email_validator.dart';
+import 'package:flutter/services.dart';
 
 class Signup extends StatefulWidget {
   @override
@@ -8,8 +11,18 @@ class Signup extends StatefulWidget {
 
 class _SignupState extends State<Signup> {
   var _formKey = GlobalKey<FormState>();
-  final TextEditingController user_idController = TextEditingController();
-  final TextEditingController user_passController = TextEditingController();
+  final TextEditingController firstNameController = TextEditingController();
+  final TextEditingController lastNameController = TextEditingController();
+  final TextEditingController emailIdController = TextEditingController();
+  final TextEditingController mobileNumberController = TextEditingController();
+  final TextEditingController referenceOneNameController =
+      TextEditingController();
+  final TextEditingController referenceOneMobileNumberController =
+      TextEditingController();
+  final TextEditingController referenceTwoNameController =
+      TextEditingController();
+  final TextEditingController referenceTwoMobileNumberController =
+      TextEditingController();
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -82,10 +95,10 @@ class _SignupState extends State<Signup> {
                     ),
                   ),
                   child: TextFormField(
-                    controller: user_idController,
+                    controller: firstNameController,
                     validator: (String value) {
                       if (value.isEmpty) {
-                        return "Please enter valid username.";
+                        return "Please enter valid name.";
                       }
                       /*if (!EmailValidator.validate(value)) {
                           return "Enter valid email";
@@ -112,10 +125,10 @@ class _SignupState extends State<Signup> {
                     ),
                   ),
                   child: TextFormField(
-                    controller: user_idController,
+                    controller: lastNameController,
                     validator: (String value) {
                       if (value.isEmpty) {
-                        return "Please enter valid username.";
+                        return "Please enter valid last name.";
                       }
                       /*if (!EmailValidator.validate(value)) {
                           return "Enter valid email";
@@ -141,10 +154,14 @@ class _SignupState extends State<Signup> {
                     ),
                   ),
                   child: TextFormField(
-                    controller: user_idController,
+                    controller: emailIdController,
+                    keyboardType: TextInputType.emailAddress,
                     validator: (String value) {
                       if (value.isEmpty) {
-                        return "Please enter valid username.";
+                        return "Please enter valid email.";
+                      }
+                      if (!EmailValidator.validate(value)) {
+                        return "Enter valid email";
                       }
                       /*if (!EmailValidator.validate(value)) {
                           return "Enter valid email";
@@ -171,10 +188,15 @@ class _SignupState extends State<Signup> {
                     ),
                   ),
                   child: TextFormField(
-                    controller: user_idController,
+                    controller: mobileNumberController,
+                    maxLength: 10,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [
+                      WhitelistingTextInputFormatter.digitsOnly
+                    ],
                     validator: (String value) {
                       if (value.isEmpty) {
-                        return "Please enter valid username.";
+                        return "Please enter valid mobile number.";
                       }
                       /*if (!EmailValidator.validate(value)) {
                           return "Enter valid email";
@@ -186,6 +208,8 @@ class _SignupState extends State<Signup> {
                       contentPadding: EdgeInsets.only(
                           left: 40, bottom: 11, top: 11, right: 15),
                       hintText: 'Mobile Number',
+                      prefixText: '+91 ',
+
                       //hintStyle: TextStyle(fontSize: 20.0, color: Colors.redAccent,fontWeight: ),
                     ),
                   ),
@@ -213,7 +237,7 @@ class _SignupState extends State<Signup> {
                     ),
                   ),
                   child: TextFormField(
-                    controller: user_idController,
+                    controller: referenceOneNameController,
                     validator: (String value) {
                       if (value.isEmpty) {
                         return "Please enter valid username.";
@@ -243,10 +267,15 @@ class _SignupState extends State<Signup> {
                     ),
                   ),
                   child: TextFormField(
-                    controller: user_idController,
+                    controller: referenceOneMobileNumberController,
+                    maxLength: 10,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [
+                      WhitelistingTextInputFormatter.digitsOnly
+                    ],
                     validator: (String value) {
                       if (value.isEmpty) {
-                        return "Please enter valid username.";
+                        return "Please enter valid mobile number.";
                       }
                       /*if (!EmailValidator.validate(value)) {
                           return "Enter valid email";
@@ -254,12 +283,13 @@ class _SignupState extends State<Signup> {
                       //return "";
                     },
                     decoration: InputDecoration(
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.only(
-                          left: 40, bottom: 11, top: 11, right: 15),
-                      hintText: 'Mobile Number',
-                      //hintStyle: TextStyle(fontSize: 20.0, color: Colors.redAccent,fontWeight: ),
-                    ),
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.only(
+                            left: 40, bottom: 11, top: 11, right: 15),
+                        hintText: 'Mobile Number',
+                        prefixText: "+91 "
+                        //hintStyle: TextStyle(fontSize: 20.0, color: Colors.redAccent,fontWeight: ),
+                        ),
                   ),
                 ),
                 SizedBox(height: 10.0),
@@ -285,10 +315,10 @@ class _SignupState extends State<Signup> {
                     ),
                   ),
                   child: TextFormField(
-                    controller: user_idController,
+                    controller: referenceTwoNameController,
                     validator: (String value) {
                       if (value.isEmpty) {
-                        return "Please enter valid username.";
+                        return "Please enter valid name.";
                       }
                       /*if (!EmailValidator.validate(value)) {
                           return "Enter valid email";
@@ -315,7 +345,12 @@ class _SignupState extends State<Signup> {
                     ),
                   ),
                   child: TextFormField(
-                    controller: user_idController,
+                    controller: referenceTwoMobileNumberController,
+                    maxLength: 10,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [
+                      WhitelistingTextInputFormatter.digitsOnly
+                    ],
                     validator: (String value) {
                       if (value.isEmpty) {
                         return "Please enter valid username.";
@@ -326,12 +361,13 @@ class _SignupState extends State<Signup> {
                       //return "";
                     },
                     decoration: InputDecoration(
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.only(
-                          left: 40, bottom: 11, top: 11, right: 15),
-                      hintText: 'Mobile Number',
-                      //hintStyle: TextStyle(fontSize: 20.0, color: Colors.redAccent,fontWeight: ),
-                    ),
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.only(
+                            left: 40, bottom: 11, top: 11, right: 15),
+                        hintText: 'Mobile Number',
+                        prefixText: "+91 "
+                        //hintStyle: TextStyle(fontSize: 20.0, color: Colors.redAccent,fontWeight: ),
+                        ),
                   ),
                 ),
                 SizedBox(height: 10.0),

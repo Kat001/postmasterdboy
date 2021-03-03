@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:postmasterdboy/screens/available.dart';
-import 'package:postmasterdboy/screens/bankdetails.dart';
-import 'package:postmasterdboy/screens/forgotpassword.dart';
-import 'package:postmasterdboy/screens/homepage.dart';
-import 'package:postmasterdboy/screens/otpforgotpassword.dart';
 import 'package:postmasterdboy/screens/login.dart';
-import 'package:postmasterdboy/screens/otpsignup.dart';
+
 import 'package:postmasterdboy/screens/profile.dart';
-import 'package:postmasterdboy/screens/setforgotpassword.dart';
-import 'package:postmasterdboy/screens/setsignuppassword.dart';
-import 'package:postmasterdboy/screens/signup.dart';
-import 'package:postmasterdboy/screens/documentsupload.dart';
+//import 'package:postmaster/Screens/faq.dart';
+//import 'package:postmaster/Screens/privacy.dart';
+//import 'package:postmaster/Screens/terms.dart';
+import 'Screens/Homepage.dart';
+//import 'Screens/Login.dart';
 import 'package:sizer/sizer.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+//import 'package:flutter/scheduler.dart';
 
 void main() => runApp(Myapp());
 
@@ -26,12 +25,12 @@ class _MyappState extends State<Myapp> {
   @override
   void initState() {
     super.initState();
-    //autoLogIn();
+    autoLogIn();
   }
 
-  /* void autoLogIn() async {
-   // final SharedPreferences prefs = await SharedPreferences.getInstance();
-    //final String token = prefs.getString('token');
+  void autoLogIn() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String token = prefs.getString('token');
 
     if (token != null) {
       setState(() {
@@ -46,7 +45,7 @@ class _MyappState extends State<Myapp> {
 
       return;
     }
-  }*/
+  }
 
   @override
   Widget build(BuildContext context) {

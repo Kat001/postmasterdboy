@@ -11,10 +11,13 @@ import 'package:postmasterdboy/screens/available.dart';
 import 'package:postmasterdboy/screens/information.dart';
 import 'package:postmasterdboy/screens/home.dart';
 import 'package:postmasterdboy/screens/profile.dart';
+import 'package:postmasterdboy/screens/setprofile.dart';
+import 'package:postmasterdboy/screens/profile.dart';
 import 'package:postmasterdboy/screens/chat.dart';
 import 'package:postmasterdboy/screens/available.dart';
 import 'package:postmasterdboy/Components/customicons.dart';
 import 'package:postmasterdboy/Components/animate.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Homepage extends StatefulWidget {
   @override
@@ -23,6 +26,7 @@ class Homepage extends StatefulWidget {
 
 class _HomepageState extends State<Homepage> {
   int _currentstate = 0;
+  bool _setDuty;
   final List<Widget> _children = [
     Available(),
     Profile(),
@@ -36,39 +40,82 @@ class _HomepageState extends State<Homepage> {
   // }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _setDuty = true;
+    //setData();
+  }
+
+  void setData() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _setDuty = prefs.getBool("duty");
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final _screenSize = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        actions: [
+        actions: <Widget>[
           InkWell(
-            onTap: () {
-              Navigator.push(context, SlideLeftRoute(page: Available()));
+            onTap: () async {
+              final SharedPreferences prefs =
+                  await SharedPreferences.getInstance();
+              if (_setDuty == true) {
+                prefs.setBool("duty", false);
+              } else {
+                prefs.setBool("duty", true);
+              }
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Homepage()),
+              );
             },
             child: Container(
               margin: EdgeInsets.only(
                   top: displayHeight(context) * 0.023,
                   right: displayWidth(context) * 0.06),
-              child: Text(
-                "Invite",
-                style: TextStyle(
-                  color: Color(0xFF27DEBF),
-                  fontFamily: 'RobotoBold',
-                  fontSize: displayWidth(context) * 0.05,
-                ),
-              ),
+              child: _setDuty
+                  ? Text(
+                      "On-Duty",
+                      style: TextStyle(
+                        color: Colors.green,
+                        fontFamily: 'RobotoBold',
+                        fontSize: displayWidth(context) * 0.05,
+                      ),
+                    )
+                  : Text(
+                      "Off-Duty",
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontFamily: 'RobotoBold',
+                        fontSize: displayWidth(context) * 0.05,
+                      ),
+                    ),
             ),
           ),
           Container(
             margin: EdgeInsets.only(right: displayWidth(context) * 0.05),
             width: 25,
             height: 25,
-            child: SvgPicture.asset(
+            child: _setDuty
+                ? Icon(
+                    Icons.check_circle,
+                    color: Colors.green,
+                  )
+                : Icon(
+                    Icons.check_circle,
+                    color: Colors.red,
+                  ), /*SvgPicture.asset(
               language,
               color: Color(0xFF465A64),
-            ),
+            ),*/
           )
         ],
         leading: IconButton(

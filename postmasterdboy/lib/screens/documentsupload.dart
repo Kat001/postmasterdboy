@@ -120,7 +120,7 @@ class _DocumentuploadState extends State<Documentupload> {
                 Padding(
                   padding: const EdgeInsets.only(left: 33, bottom: 5.0),
                   child: Text(
-                    "Address proof(Required)",
+                    "Aadhaar card front(Required)",
                     style: TextStyle(
                       //color: Colors.white,
                       fontSize: 18.0,
@@ -172,7 +172,7 @@ class _DocumentuploadState extends State<Documentupload> {
                 Padding(
                   padding: const EdgeInsets.only(left: 33, bottom: 5.0),
                   child: Text(
-                    "Address proof(Required)",
+                    "Aadhaar card back(Required)",
                     style: TextStyle(
                       //color: Colors.white,
                       fontSize: 18.0,
@@ -224,7 +224,7 @@ class _DocumentuploadState extends State<Documentupload> {
                 Padding(
                   padding: const EdgeInsets.only(left: 33, bottom: 5.0),
                   child: Text(
-                    "Address proof(Required)",
+                    "Driving Licence front(Required)",
                     style: TextStyle(
                       //color: Colors.white,
                       fontSize: 18.0,
@@ -276,7 +276,7 @@ class _DocumentuploadState extends State<Documentupload> {
                 Padding(
                   padding: const EdgeInsets.only(left: 33, bottom: 5.0),
                   child: Text(
-                    "Address proof(Required)",
+                    "Driving Licence back(Required)",
                     style: TextStyle(
                       //color: Colors.white,
                       fontSize: 18.0,
@@ -328,7 +328,7 @@ class _DocumentuploadState extends State<Documentupload> {
                 Padding(
                   padding: const EdgeInsets.only(left: 33, bottom: 5.0),
                   child: Text(
-                    "Address proof(Required)",
+                    "Passport",
                     style: TextStyle(
                       //color: Colors.white,
                       fontSize: 18.0,
@@ -380,7 +380,59 @@ class _DocumentuploadState extends State<Documentupload> {
                 Padding(
                   padding: const EdgeInsets.only(left: 33, bottom: 5.0),
                   child: Text(
-                    "Address proof(Required)",
+                    "P.U.C",
+                    style: TextStyle(
+                      //color: Colors.white,
+                      fontSize: 18.0,
+                      fontFamily: 'robotobold',
+                    ),
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.only(left: 33.0, right: 33.0),
+                  padding: const EdgeInsets.all(3.0),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: const BorderRadius.all(
+                      const Radius.circular(30.0),
+                    ),
+                  ),
+                  child: getImageWidget(),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 33, bottom: 5.0),
+                  child: Text(
+                    "Please upload in pdf,jpeg",
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.only(
+                      left: 190.0, right: 33.0, bottom: 5.0),
+                  padding: const EdgeInsets.all(3.0),
+                  decoration: BoxDecoration(
+                    color: Colors.green[400],
+                    //border: Border.all(color: Colors.blueAccent),
+                    borderRadius: const BorderRadius.all(
+                      const Radius.circular(30.0),
+                    ),
+                  ),
+                  child: Center(
+                    child: Container(
+                      margin: EdgeInsets.only(top: 12.0, bottom: 12.0),
+                      child: Text(
+                        "Upload",
+                        style: TextStyle(
+                            fontFamily: 'Roboto',
+                            fontSize: 18,
+                            color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 33, bottom: 5.0),
+                  child: Text(
+                    "RC Book(Required)",
                     style: TextStyle(
                       //color: Colors.white,
                       fontSize: 18.0,

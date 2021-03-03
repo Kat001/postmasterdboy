@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 
 import 'package:postmasterdboy/Components/toast_utils.dart';
 import 'package:postmasterdboy/Components/animate.dart';
+import 'package:flutter/services.dart';
 
 //import 'package:http/http.dart' as http;
 //import 'package:flutter/services.dart';
@@ -21,8 +22,7 @@ class Forgotpassword extends StatefulWidget {
 
 class _ForgotpasswordState extends State<Forgotpassword> {
   var _formKey = GlobalKey<FormState>();
-  final TextEditingController user_idController = TextEditingController();
-  final TextEditingController user_passController = TextEditingController();
+  final TextEditingController mobileNumberController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -89,10 +89,15 @@ class _ForgotpasswordState extends State<Forgotpassword> {
                     ),
                   ),
                   child: TextFormField(
-                    controller: user_idController,
+                    controller: mobileNumberController,
+                    maxLength: 10,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [
+                      WhitelistingTextInputFormatter.digitsOnly,
+                    ],
                     validator: (String value) {
                       if (value.isEmpty) {
-                        return "Please enter valid username.";
+                        return "Please enter valid mobile number.";
                       }
                       /*if (!EmailValidator.validate(value)) {
                           return "Enter valid email";
@@ -100,11 +105,12 @@ class _ForgotpasswordState extends State<Forgotpassword> {
                       //return "";
                     },
                     decoration: InputDecoration(
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.only(
-                          left: 40, bottom: 11, top: 11, right: 15),
-                      hintText: 'Email or Phone Numbers',
-                    ),
+                        counterText: "",
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.only(
+                            left: 40, bottom: 11, top: 11, right: 15),
+                        labelText: 'Phone Number',
+                        prefixText: "+91 "),
                   ),
                 ),
                 SizedBox(height: 25.0),
