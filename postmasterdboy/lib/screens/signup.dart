@@ -3,6 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:postmasterdboy/Components/animate.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/services.dart';
+import 'package:postmasterdboy/screens/otpsignup.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:postmasterdboy/Components/toast_utils.dart';
 
 class Signup extends StatefulWidget {
   @override
@@ -238,15 +244,6 @@ class _SignupState extends State<Signup> {
                   ),
                   child: TextFormField(
                     controller: referenceOneNameController,
-                    validator: (String value) {
-                      if (value.isEmpty) {
-                        return "Please enter valid username.";
-                      }
-                      /*if (!EmailValidator.validate(value)) {
-                          return "Enter valid email";
-                        }*/
-                      //return "";
-                    },
                     decoration: InputDecoration(
                       border: InputBorder.none,
                       contentPadding: EdgeInsets.only(
@@ -273,15 +270,6 @@ class _SignupState extends State<Signup> {
                     inputFormatters: [
                       WhitelistingTextInputFormatter.digitsOnly
                     ],
-                    validator: (String value) {
-                      if (value.isEmpty) {
-                        return "Please enter valid mobile number.";
-                      }
-                      /*if (!EmailValidator.validate(value)) {
-                          return "Enter valid email";
-                        }*/
-                      //return "";
-                    },
                     decoration: InputDecoration(
                         border: InputBorder.none,
                         contentPadding: EdgeInsets.only(
@@ -316,15 +304,6 @@ class _SignupState extends State<Signup> {
                   ),
                   child: TextFormField(
                     controller: referenceTwoNameController,
-                    validator: (String value) {
-                      if (value.isEmpty) {
-                        return "Please enter valid name.";
-                      }
-                      /*if (!EmailValidator.validate(value)) {
-                          return "Enter valid email";
-                        }*/
-                      //return "";
-                    },
                     decoration: InputDecoration(
                       border: InputBorder.none,
                       contentPadding: EdgeInsets.only(
@@ -351,15 +330,6 @@ class _SignupState extends State<Signup> {
                     inputFormatters: [
                       WhitelistingTextInputFormatter.digitsOnly
                     ],
-                    validator: (String value) {
-                      if (value.isEmpty) {
-                        return "Please enter valid username.";
-                      }
-                      /*if (!EmailValidator.validate(value)) {
-                          return "Enter valid email";
-                        }*/
-                      //return "";
-                    },
                     decoration: InputDecoration(
                         border: InputBorder.none,
                         contentPadding: EdgeInsets.only(
@@ -371,25 +341,32 @@ class _SignupState extends State<Signup> {
                   ),
                 ),
                 SizedBox(height: 10.0),
-                Container(
-                  margin: const EdgeInsets.only(left: 33.0, right: 33.0),
-                  padding: const EdgeInsets.all(3.0),
-                  decoration: BoxDecoration(
-                    color: Colors.green[400],
-                    //border: Border.all(color: Colors.blueAccent),
-                    borderRadius: const BorderRadius.all(
-                      const Radius.circular(30.0),
+                InkWell(
+                  onTap: () {
+                    if (_formKey.currentState.validate()) {
+                      createUser();
+                    }
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(left: 33.0, right: 33.0),
+                    padding: const EdgeInsets.all(3.0),
+                    decoration: BoxDecoration(
+                      color: Colors.green[400],
+                      //border: Border.all(color: Colors.blueAccent),
+                      borderRadius: const BorderRadius.all(
+                        const Radius.circular(30.0),
+                      ),
                     ),
-                  ),
-                  child: Center(
-                    child: Container(
-                      margin: EdgeInsets.only(top: 15.0, bottom: 15.0),
-                      child: Text(
-                        "Create Account",
-                        style: TextStyle(
-                            fontFamily: 'Roboto',
-                            fontSize: 18,
-                            color: Colors.white),
+                    child: Center(
+                      child: Container(
+                        margin: EdgeInsets.only(top: 15.0, bottom: 15.0),
+                        child: Text(
+                          "Create Account",
+                          style: TextStyle(
+                              fontFamily: 'Roboto',
+                              fontSize: 18,
+                              color: Colors.white),
+                        ),
                       ),
                     ),
                   ),
@@ -432,37 +409,49 @@ class _SignupState extends State<Signup> {
     );
   }
 
-  /* Future<http.Response> loginUser() async {
-    String user_id = user_idController.text;
-    String user_pass = user_passController.text;
+  Future<http.Response> createUser() async {
+    String firstName = firstNameController.text;
+    String lastName = lastNameController.text;
+    String email = emailIdController.text;
+    String phn_number1 = mobileNumberController.text;
+
+    Map data = {
+      "phn_number": phn_number1,
+      "email": email,
+    };
+    var body = json.encode(data);
+    print(phn_number1);
 
     http.Response res = await http.post(
-      'https://www.mitrahtechnology.in/apis/mitrah-api/login.php',
+      'https://www.mitrahtechnology.in/apis/mitrah-api/deliveryboy/register_send_otp.php',
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
-        "user_id": user_id,
-        "password": user_pass,
+        "phn_number": phn_number1,
+        "email": email,
       },
     );
+
     print(res.body);
     var responseData = json.decode(res.body);
-    print(responseData['token']);
-    if (responseData['success'] == 1) {
-      var data = responseData["user_details"];
-      //SharedPreferences.setMockInitialValues({});
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-
-      prefs.setString('token', responseData['token']);
-      prefs.setString('first_name', data['first_name']);
-      prefs.setString('last_name', data['last_name']);
-      prefs.setString('email', data['email']);
-      prefs.setString('phn_number', data['phn_number']);
-      //SharedPreferences prefs = await SharedPreferences.getInstance();
-
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (BuildContext context) => Dashboard()));
-
-      ToastUtils.showCustomToast(context, "Sign in Successfully");
+    if (responseData['status'] == 200) {
+      Navigator.push(
+          context,
+          SlideLeftRoute(
+              page: Otpsignup(
+            phn_number: phn_number1,
+            first_name: firstNameController.text,
+            last_name: lastNameController.text,
+            email: emailIdController.text,
+            first_rf_name: referenceOneNameController.text,
+            first_rf_mobile: referenceOneMobileNumberController.text,
+            second_rf_name: referenceTwoNameController.text,
+            second_rf_mobile: referenceTwoMobileNumberController.text,
+          )));
+    } else if (responseData['status'] == 500) {
+      showDialog(
+          context: context,
+          builder: (context) =>
+              CustomDialogError("Error", responseData['message'], "Cancel"));
     } else {
       showDialog(
           context: context,
@@ -470,5 +459,5 @@ class _SignupState extends State<Signup> {
               CustomDialogError("Error", responseData['message'], "Cancel"));
     }
     return res;
-  }*/
+  }
 }

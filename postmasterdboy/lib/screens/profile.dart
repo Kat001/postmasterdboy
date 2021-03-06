@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:postmasterdboy/screens/bankdetails.dart';
+import 'package:postmasterdboy/screens/estimate.dart';
+import 'package:postmasterdboy/screens/leaveapplication.dart';
+import 'package:postmasterdboy/screens/login.dart';
+import 'package:postmasterdboy/screens/makepayment.dart';
+import 'package:postmasterdboy/screens/refer.dart';
+import 'package:postmasterdboy/screens/setprofile.dart';
 
 import 'package:sizer/sizer.dart';
 import 'package:postmasterdboy/Components/animate.dart';
@@ -84,27 +91,326 @@ class _ProfileState extends State<Profile> {
         margin: const EdgeInsets.all(15),
         padding: const EdgeInsets.all(5.0),
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey),
+          //border: Border.all(color: Colors.grey),
           borderRadius: BorderRadius.circular(20),
           color: Colors.white, //Color(0xFFE4EDEF),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            SizedBox(height: 12.0),
             new Container(
-              margin: const EdgeInsets.all(15),
+              margin: const EdgeInsets.all(0),
               padding: const EdgeInsets.all(5.0),
               decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey),
+                //border: Border.all(color: Colors.grey),
                 borderRadius: BorderRadius.circular(20),
                 color: Colors.white, //Color(0xFFE4EDEF),
               ),
-              child: Row(
-                children: [
-                  Text("devpal"),
-                ],
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    SlideLeftRoute(page: Setprofile()),
+                  );
+                },
+                child: Row(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(right: 20),
+                      width: 25,
+                      height: 25,
+                      child: SvgPicture.asset(
+                        profile_icon,
+                        color: Color(0xFF465A64),
+                      ),
+                    ),
+                    Container(
+                      child: Text(
+                        "Personal Details",
+                        style: TextStyle(
+                          fontFamily: 'Roboto',
+                          fontSize: 20,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
+            SizedBox(height: 12.0),
+            new Container(
+              margin: const EdgeInsets.all(0),
+              padding: const EdgeInsets.all(5.0),
+              decoration: BoxDecoration(
+                //border: Border.all(color: Colors.grey),
+                borderRadius: BorderRadius.circular(20),
+                color: Colors.white, //Color(0xFFE4EDEF),
+              ),
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    SlideLeftRoute(page: Bankdetail()),
+                  );
+                },
+                child: Row(
+                  children: [
+                    Container(
+                        margin: EdgeInsets.only(right: 20),
+                        width: 25,
+                        height: 25,
+                        child: Icon(Icons.monetization_on)),
+                    Container(
+                      child: Text(
+                        "Bank Details",
+                        style: TextStyle(
+                          fontFamily: 'Roboto',
+                          fontSize: 20,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(height: 12.0),
+            new Container(
+              margin: const EdgeInsets.all(0),
+              padding: const EdgeInsets.all(5.0),
+              decoration: BoxDecoration(
+                //border: Border.all(color: Colors.grey),
+                borderRadius: BorderRadius.circular(20),
+                color: Colors.white, //Color(0xFFE4EDEF),
+              ),
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    SlideLeftRoute(page: Leaveapplication()),
+                  );
+                },
+                child: Row(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(right: 20),
+                      width: 25,
+                      height: 25,
+                      child: Icon(Icons
+                          .format_align_left_rounded), /*SvgPicture.asset(
+                        profile_icon,
+                        color: Color(0xFF465A64),
+                      ),*/
+                    ),
+                    Container(
+                      child: Text(
+                        "Leave Application",
+                        style: TextStyle(
+                          fontFamily: 'Roboto',
+                          fontSize: 20,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(height: 12.0),
+            new Container(
+              margin: const EdgeInsets.all(0),
+              padding: const EdgeInsets.all(5.0),
+              decoration: BoxDecoration(
+                //border: Border.all(color: Colors.grey),
+                borderRadius: BorderRadius.circular(20),
+                color: Colors.white, //Color(0xFFE4EDEF),
+              ),
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    SlideLeftRoute(page: Refer()),
+                  );
+                },
+                child: Row(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(right: 20),
+                      width: 25,
+                      height: 25,
+                      child: SvgPicture.asset(
+                        refer,
+                        color: Color(0xFF465A64),
+                      ),
+                    ),
+                    Container(
+                      child: Text(
+                        "Refer and Earn",
+                        style: TextStyle(
+                          fontFamily: 'Roboto',
+                          fontSize: 20,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(height: 12.0),
+            new Container(
+              margin: const EdgeInsets.all(0),
+              padding: const EdgeInsets.all(5.0),
+              decoration: BoxDecoration(
+                //border: Border.all(color: Colors.grey),
+                borderRadius: BorderRadius.circular(20),
+                color: Colors.white, //Color(0xFFE4EDEF),
+              ),
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    SlideLeftRoute(page: Makepayment()),
+                  );
+                },
+                child: Row(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(right: 20),
+                      width: 25,
+                      height: 25,
+                      child: SvgPicture.asset(
+                        money,
+                        color: Color(0xFF465A64),
+                      ),
+                    ),
+                    Container(
+                      child: Text(
+                        "Make Payment",
+                        style: TextStyle(
+                          fontFamily: 'Roboto',
+                          fontSize: 20,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(height: 12.0),
+            new Container(
+              margin: const EdgeInsets.all(0),
+              padding: const EdgeInsets.all(5.0),
+              decoration: BoxDecoration(
+                //border: Border.all(color: Colors.grey),
+                borderRadius: BorderRadius.circular(20),
+                color: Colors.white, //Color(0xFFE4EDEF),
+              ),
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    SlideLeftRoute(page: Estimate()),
+                  );
+                },
+                child: Row(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(right: 20),
+                      width: 25,
+                      height: 25,
+                      child: Icon(Icons
+                          .format_align_left_rounded), /*SvgPicture.asset(
+                        profile_icon,
+                        color: Color(0xFF465A64),
+                      ),*/
+                    ),
+                    Container(
+                      child: Text(
+                        "Total Estimate",
+                        style: TextStyle(
+                          fontFamily: 'Roboto',
+                          fontSize: 20,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(height: 25.0),
+            InkWell(
+              onTap: () async {
+                return showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: Text('Are you sure?',
+                            style: TextStyle(
+                                fontFamily: "Roboto",
+                                color: Color(0xFF465A64))),
+                        content: Text('Do you want to Logout from an App',
+                            style: TextStyle(
+                                fontFamily: "Roboto",
+                                color: Color(0xFF465A64))),
+                        actions: <Widget>[
+                          FlatButton(
+                            onPressed: () async {
+                              final SharedPreferences prefs =
+                                  await SharedPreferences.getInstance();
+                              prefs.setString("token", null);
+                              Navigator.push(
+                                  context, SlideLeftRoute(page: Login()));
+                            },
+                            child: Text('Yes',
+                                style: TextStyle(
+                                    fontFamily: "RobotoBold",
+                                    color: Color(0xFF2BCDB4))),
+                          ),
+                          FlatButton(
+                            onPressed: () => Navigator.of(context).pop(false),
+                            /*Navigator.of(context).pop(true)*/
+                            child: Text('No',
+                                style: TextStyle(
+                                    fontFamily: "RobotoBold",
+                                    color: Color(0xFF2BCDB4))),
+                          ),
+                        ],
+                      ),
+                    ) ??
+                    false;
+              },
+              child: Container(
+                margin: const EdgeInsets.only(left: 15.0, right: 15.0),
+                padding: const EdgeInsets.all(3.0),
+                decoration: BoxDecoration(
+                  color: Colors.green[400],
+                  //border: Border.all(color: Colors.blueAccent),
+                  borderRadius: const BorderRadius.all(
+                    const Radius.circular(30.0),
+                  ),
+                ),
+                child: Center(
+                  child: Container(
+                    margin: EdgeInsets.only(top: 10.0, bottom: 10.0),
+                    child: Text(
+                      "Sign Out",
+                      style: TextStyle(
+                          fontFamily: 'Roboto',
+                          fontSize: 18,
+                          color: Colors.white),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 20.0),
+            Container(
+                margin: EdgeInsets.only(
+                  top: 15,
+                ),
+                child: Divider(
+                  color: Colors.black,
+                )),
+            SizedBox(height: 10.0),
+            Center(child: Text("App Version 1.00.1.0")),
           ],
         ),
       ),

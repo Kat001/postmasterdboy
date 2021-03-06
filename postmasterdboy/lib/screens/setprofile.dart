@@ -1,5 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:postmasterdboy/Components/sizes_helpers.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:email_validator/email_validator.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:postmasterdboy/Components/animate.dart';
 
 class Setprofile extends StatefulWidget {
   @override
@@ -8,8 +17,29 @@ class Setprofile extends StatefulWidget {
 
 class _SetprofileState extends State<Setprofile> {
   var _formKey = GlobalKey<FormState>();
-  final TextEditingController user_idController = TextEditingController();
-  final TextEditingController user_passController = TextEditingController();
+  TextEditingController _firstNameController = TextEditingController();
+  TextEditingController _lastNameController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _phoneController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    fetchInformation();
+  }
+
+  Future fetchInformation() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    //firstName = prefs.getString("first_name");
+    //print("first:" + firstName);
+
+    setState(() {
+      _firstNameController.text = prefs.getString("first_name");
+      _lastNameController.text = prefs.getString("last_name");
+      _emailController.text = prefs.getString("email");
+      _phoneController.text = prefs.getString("phn_number");
+    });
+  }
 
   Widget imageProfile() {
     return Center(
@@ -71,6 +101,16 @@ class _SetprofileState extends State<Setprofile> {
         FocusScope.of(context).requestFocus(new FocusNode());
       },
       child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          leading: IconButton(
+            onPressed: () async {
+              Navigator.pop(context);
+            },
+            icon: Icon(Icons.arrow_back_ios),
+          ),
+        ),
         resizeToAvoidBottomInset: false,
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
@@ -80,15 +120,14 @@ class _SetprofileState extends State<Setprofile> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                imageProfile(),
                 Center(
                     child: Container(
                   margin: EdgeInsets.only(bottom: 25.0),
                   child: Text(
-                    "Add yout details to login",
+                    "Personal details",
                     style: TextStyle(
-                      fontFamily: 'Roboto',
-                      fontSize: 18,
+                      fontFamily: 'RobotoBold',
+                      fontSize: 25,
                     ),
                   ),
                 )),
@@ -102,10 +141,10 @@ class _SetprofileState extends State<Setprofile> {
                     ),
                   ),
                   child: TextFormField(
-                    controller: user_idController,
+                    controller: _firstNameController,
                     validator: (String value) {
                       if (value.isEmpty) {
-                        return "Please enter valid username.";
+                        return "Please enter first name.";
                       }
                       /*if (!EmailValidator.validate(value)) {
                           return "Enter valid email";
@@ -116,7 +155,7 @@ class _SetprofileState extends State<Setprofile> {
                       border: InputBorder.none,
                       contentPadding: EdgeInsets.only(
                           left: 40, bottom: 11, top: 11, right: 15),
-                      hintText: 'Name',
+                      hintText: 'first name',
                     ),
                   ),
                 ),
@@ -131,10 +170,10 @@ class _SetprofileState extends State<Setprofile> {
                     ),
                   ),
                   child: TextFormField(
-                    controller: user_idController,
+                    controller: _lastNameController,
                     validator: (String value) {
                       if (value.isEmpty) {
-                        return "Please enter valid username.";
+                        return "Please enter last name.";
                       }
                       /*if (!EmailValidator.validate(value)) {
                           return "Enter valid email";
@@ -145,7 +184,7 @@ class _SetprofileState extends State<Setprofile> {
                       border: InputBorder.none,
                       contentPadding: EdgeInsets.only(
                           left: 40, bottom: 11, top: 11, right: 15),
-                      hintText: 'Email',
+                      hintText: 'Last name',
                     ),
                   ),
                 ),
@@ -160,21 +199,21 @@ class _SetprofileState extends State<Setprofile> {
                     ),
                   ),
                   child: TextFormField(
-                    controller: user_idController,
+                    controller: _emailController,
                     validator: (String value) {
                       if (value.isEmpty) {
-                        return "Please enter valid username.";
+                        return "Please enter valid email.";
                       }
-                      /*if (!EmailValidator.validate(value)) {
-                          return "Enter valid email";
-                        }*/
+                      if (!EmailValidator.validate(value)) {
+                        return "Enter valid email";
+                      }
                       //return "";
                     },
                     decoration: InputDecoration(
                       border: InputBorder.none,
                       contentPadding: EdgeInsets.only(
                           left: 40, bottom: 11, top: 11, right: 15),
-                      hintText: 'Mobile no',
+                      hintText: 'email',
                     ),
                   ),
                 ),
@@ -189,10 +228,10 @@ class _SetprofileState extends State<Setprofile> {
                     ),
                   ),
                   child: TextFormField(
-                    controller: user_idController,
+                    controller: _phoneController,
                     validator: (String value) {
                       if (value.isEmpty) {
-                        return "Address";
+                        return "Enter Phone number";
                       }
                       /*if (!EmailValidator.validate(value)) {
                           return "Enter valid email";
@@ -203,66 +242,7 @@ class _SetprofileState extends State<Setprofile> {
                       border: InputBorder.none,
                       contentPadding: EdgeInsets.only(
                           left: 40, bottom: 11, top: 11, right: 15),
-                      hintText: 'Email or Phone Numbers',
-                    ),
-                  ),
-                ),
-                SizedBox(height: 15.0),
-                Container(
-                  margin: const EdgeInsets.only(left: 33.0, right: 33.0),
-                  padding: const EdgeInsets.all(3.0),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    borderRadius: const BorderRadius.all(
-                      const Radius.circular(30.0),
-                    ),
-                  ),
-                  child: TextFormField(
-                    controller: user_idController,
-                    validator: (String value) {
-                      if (value.isEmpty) {
-                        return "Please enter valid username.";
-                      }
-                      /*if (!EmailValidator.validate(value)) {
-                          return "Enter valid email";
-                        }*/
-                      //return "";
-                    },
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.only(
-                          left: 40, bottom: 11, top: 11, right: 15),
-                      hintText: 'Password',
-                    ),
-                  ),
-                ),
-                SizedBox(height: 15.0),
-                Container(
-                  margin: const EdgeInsets.only(left: 33.0, right: 33.0),
-                  padding: const EdgeInsets.all(3.0),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    borderRadius: const BorderRadius.all(
-                      const Radius.circular(30.0),
-                    ),
-                  ),
-                  child: TextFormField(
-                    controller: user_passController,
-                    validator: (String value) {
-                      if (value.isEmpty) {
-                        return "Please enter password.";
-                      }
-                      /*if (!EmailValidator.validate(value)) {
-                          return "Enter valid email";
-                        }*/
-                      //return "";
-                    },
-                    cursorColor: Colors.black,
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.only(
-                          left: 40, bottom: 11, top: 11, right: 15),
-                      hintText: 'Confirm Password',
+                      hintText: 'Phone Numbers',
                     ),
                   ),
                 ),
@@ -291,7 +271,36 @@ class _SetprofileState extends State<Setprofile> {
                     ),
                   ),
                 ),
-                SizedBox(height: 80.0),
+                Center(
+                  child: Row(
+                    children: [
+                      Container(
+                        margin: new EdgeInsets.only(
+                            bottom: 30, top: 30.0, left: 50),
+                        child: Text(
+                          "- Change Password -",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color: Color(0xFF707070), fontSize: 16.0),
+                        ),
+                      ),
+                      Container(
+                        margin: new EdgeInsets.only(bottom: 30, top: 30.0),
+                        child: InkWell(
+                          onTap: () {},
+                          child: Text(
+                            " Click Here",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: Color(0xFF27DEBF),
+                                fontSize: 16.0,
+                                fontFamily: 'Roboto'),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
@@ -300,37 +309,46 @@ class _SetprofileState extends State<Setprofile> {
     );
   }
 
-  /* Future<http.Response> loginUser() async {
-    String user_id = user_idController.text;
-    String user_pass = user_passController.text;
+  Future<http.Response> updateUser() async {
+    Map data = {
+      "name": "TEST BHAI",
+      "email": _emailController.text,
+      "phn_number": _phoneController.text,
+      "password": "ABCD@a1234",
+      "address": "TEST"
+    };
+    var body = json.encode(data);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    String token = prefs.getString("token");
 
     http.Response res = await http.post(
-      'https://www.mitrahtechnology.in/apis/mitrah-api/login.php',
+      'https://www.mitrahtechnology.in/apis/mitrah-api/deliveryboy/update_personal_details.php',
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
-        "user_id": user_id,
-        "password": user_pass,
+        'Authorization': token,
       },
+      body: body,
     );
+
     print(res.body);
     var responseData = json.decode(res.body);
-    print(responseData['token']);
-    if (responseData['success'] == 1) {
-      var data = responseData["user_details"];
-      //SharedPreferences.setMockInitialValues({});
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-
-      prefs.setString('token', responseData['token']);
-      prefs.setString('first_name', data['first_name']);
-      prefs.setString('last_name', data['last_name']);
-      prefs.setString('email', data['email']);
-      prefs.setString('phn_number', data['phn_number']);
-      //SharedPreferences prefs = await SharedPreferences.getInstance();
-
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (BuildContext context) => Dashboard()));
-
-      ToastUtils.showCustomToast(context, "Sign in Successfully");
+    if (responseData['status'] == 200) {
+      prefs.setString("first_name", _firstNameController.text);
+      prefs.setString("last_name", _lastNameController.text);
+      prefs.setString("email", _emailController.text);
+      prefs.setString("phn_number", _phoneController.text);
+      showDialog(
+        context: context,
+        builder: (context) =>
+            CustomDialog("Success", responseData['message'], "Okay", 2),
+      );
+      //Navigator.push(context, SlideLeftRoute(page: Profile()));
+    } else if (responseData['status'] == 500) {
+      showDialog(
+          context: context,
+          builder: (context) =>
+              CustomDialogError("Error", "User already Exists", "Cancel"));
     } else {
       showDialog(
           context: context,
@@ -338,5 +356,5 @@ class _SetprofileState extends State<Setprofile> {
               CustomDialogError("Error", responseData['message'], "Cancel"));
     }
     return res;
-  }*/
+  }
 }

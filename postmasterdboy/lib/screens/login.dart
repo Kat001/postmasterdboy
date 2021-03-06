@@ -4,6 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:postmasterdboy/Components/toast_utils.dart';
 import 'package:postmasterdboy/Components/animate.dart';
 import 'package:postmasterdboy/screens/forgotpassword.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 //import 'package:http/http.dart' as http;
 //import 'package:flutter/services.dart';
@@ -134,7 +138,9 @@ class _LoginState extends State<Login> {
                 SizedBox(height: 25.0),
                 InkWell(
                   onTap: () {
-                    Navigator.push(context, SlideRightRoute(page: Homepage()));
+                    if (_formKey.currentState.validate()) {
+                      loginUser();
+                    }
                   },
                   child: Container(
                     margin: const EdgeInsets.only(left: 33.0, right: 33.0),
@@ -233,12 +239,12 @@ class _LoginState extends State<Login> {
     );
   }
 
-  /* Future<http.Response> loginUser() async {
+  Future<http.Response> loginUser() async {
     String user_id = user_idController.text;
     String user_pass = user_passController.text;
 
     http.Response res = await http.post(
-      'https://www.mitrahtechnology.in/apis/mitrah-api/login.php',
+      'https://www.mitrahtechnology.in/apis/mitrah-api/deliveryboy/login.php',
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         "user_id": user_id,
@@ -249,7 +255,7 @@ class _LoginState extends State<Login> {
     var responseData = json.decode(res.body);
     print(responseData['token']);
     if (responseData['success'] == 1) {
-      var data = responseData["user_details"];
+      var data = responseData["delivery_boy_user_details"];
       //SharedPreferences.setMockInitialValues({});
       SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -258,10 +264,9 @@ class _LoginState extends State<Login> {
       prefs.setString('last_name', data['last_name']);
       prefs.setString('email', data['email']);
       prefs.setString('phn_number', data['phn_number']);
-      //SharedPreferences prefs = await SharedPreferences.getInstance();
 
       Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (BuildContext context) => Dashboard()));
+          MaterialPageRoute(builder: (BuildContext context) => Homepage()));
 
       ToastUtils.showCustomToast(context, "Sign in Successfully");
     } else {
@@ -271,5 +276,5 @@ class _LoginState extends State<Login> {
               CustomDialogError("Error", responseData['message'], "Cancel"));
     }
     return res;
-  }*/
+  }
 }

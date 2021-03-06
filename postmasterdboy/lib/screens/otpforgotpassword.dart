@@ -1,17 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:postmasterdboy/Components/customicons.dart';
+import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
 //import 'package:postmaster/Screens/SetPassword.dart';
 //import 'package:postmaster/Screens/Signup.dart';
 import 'package:postmasterdboy/Components/animate.dart';
 import 'package:postmasterdboy/screens/setforgotpassword.dart';
 
 class Otpclass extends StatefulWidget {
+  Otpclass({
+    Key key,
+    this.phn_number,
+  }) : super(key: key);
+  final String phn_number;
   @override
   _OtpclassState createState() => _OtpclassState();
 }
 
 class _OtpclassState extends State<Otpclass> {
+  final TextEditingController _firstController = TextEditingController();
+  final TextEditingController _secondController = TextEditingController();
+  final TextEditingController _thirdController = TextEditingController();
+  final TextEditingController _fourthController = TextEditingController();
+  final TextEditingController _fifthController = TextEditingController();
+  final TextEditingController _sixthController = TextEditingController();
+
   FocusNode pin2FocusNode;
   FocusNode pin3FocusNode;
   FocusNode pin4FocusNode;
@@ -144,11 +162,14 @@ class _OtpclassState extends State<Otpclass> {
                         width: 50.0,
                         height: 50.0,
                         child: TextFormField(
+                          controller: _firstController,
+                          maxLength: 1,
                           autofocus: true,
                           obscureText: true,
                           style: TextStyle(fontSize: 24),
                           decoration: InputDecoration(
                             enabledBorder: OutlineInputBorder(),
+                            counterText: "",
                           ),
                           keyboardType: TextInputType.number,
                           textAlign: TextAlign.center,
@@ -162,11 +183,17 @@ class _OtpclassState extends State<Otpclass> {
                         height: 50.0,
                         child: TextFormField(
                           focusNode: pin2FocusNode,
+                          controller: _secondController,
+                          inputFormatters: [
+                            WhitelistingTextInputFormatter.digitsOnly
+                          ],
+                          maxLength: 1,
                           autofocus: true,
                           obscureText: true,
                           style: TextStyle(fontSize: 24),
                           decoration: InputDecoration(
                             enabledBorder: OutlineInputBorder(),
+                            counterText: "",
                           ),
                           keyboardType: TextInputType.number,
                           textAlign: TextAlign.center,
@@ -180,10 +207,16 @@ class _OtpclassState extends State<Otpclass> {
                         height: 50.0,
                         child: TextFormField(
                           focusNode: pin3FocusNode,
+                          controller: _thirdController,
+                          maxLength: 1,
+                          inputFormatters: [
+                            WhitelistingTextInputFormatter.digitsOnly
+                          ],
                           autofocus: true,
                           obscureText: true,
                           style: TextStyle(fontSize: 24),
                           decoration: InputDecoration(
+                            counterText: "",
                             enabledBorder: OutlineInputBorder(),
                           ),
                           keyboardType: TextInputType.number,
@@ -198,10 +231,16 @@ class _OtpclassState extends State<Otpclass> {
                         height: 50.0,
                         child: TextFormField(
                           focusNode: pin4FocusNode,
+                          controller: _fourthController,
+                          maxLength: 1,
+                          inputFormatters: [
+                            WhitelistingTextInputFormatter.digitsOnly
+                          ],
                           autofocus: true,
                           obscureText: true,
                           style: TextStyle(fontSize: 24),
                           decoration: InputDecoration(
+                            counterText: "",
                             enabledBorder: OutlineInputBorder(),
                           ),
                           keyboardType: TextInputType.number,
@@ -216,16 +255,46 @@ class _OtpclassState extends State<Otpclass> {
                         height: 50.0,
                         child: TextFormField(
                           focusNode: pin5FocusNode,
+                          controller: _fifthController,
+                          maxLength: 1,
+                          inputFormatters: [
+                            WhitelistingTextInputFormatter.digitsOnly
+                          ],
                           autofocus: true,
                           obscureText: true,
                           style: TextStyle(fontSize: 24),
                           decoration: InputDecoration(
+                            counterText: "",
                             enabledBorder: OutlineInputBorder(),
                           ),
                           keyboardType: TextInputType.number,
                           textAlign: TextAlign.center,
                           onChanged: (value) {
-                            pin5FocusNode.unfocus();
+                            nextField(value, pin6FocusNode);
+                          },
+                        ),
+                      ),
+                      SizedBox(
+                        width: 50.0,
+                        height: 50.0,
+                        child: TextFormField(
+                          focusNode: pin6FocusNode,
+                          controller: _sixthController,
+                          maxLength: 1,
+                          inputFormatters: [
+                            WhitelistingTextInputFormatter.digitsOnly
+                          ],
+                          autofocus: true,
+                          obscureText: true,
+                          style: TextStyle(fontSize: 24),
+                          decoration: InputDecoration(
+                            counterText: "",
+                            enabledBorder: OutlineInputBorder(),
+                          ),
+                          keyboardType: TextInputType.number,
+                          textAlign: TextAlign.center,
+                          onChanged: (value) {
+                            pin6FocusNode.unfocus();
                           },
                         ),
                       ),
@@ -234,7 +303,7 @@ class _OtpclassState extends State<Otpclass> {
               SizedBox(height: 50.0),
               InkWell(
                 onTap: () {
-                  Navigator.push(context, SlideLeftRoute(page: Setpassword()));
+                  verifyUser();
                 },
                 child: Container(
                   margin: const EdgeInsets.only(left: 33.0, right: 33.0),
@@ -279,7 +348,9 @@ class _OtpclassState extends State<Otpclass> {
                         top: 40.0,
                       ),
                       child: InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          reSendOtp();
+                        },
                         child: Text(
                           " Click Here",
                           textAlign: TextAlign.center,
@@ -298,5 +369,71 @@ class _OtpclassState extends State<Otpclass> {
         ),
       ),
     );
+  }
+
+  Future<http.Response> verifyUser() async {
+    String code = _firstController.text +
+        _secondController.text +
+        _thirdController.text +
+        _fourthController.text +
+        _fifthController.text +
+        _sixthController.text;
+
+    http.Response res = await http.post(
+      'https://www.mitrahtechnology.in/apis/mitrah-api/deliveryboy/forgot_password_verify_otp.php',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'phn_number': widget.phn_number,
+        'otp': code,
+      },
+    );
+
+    print(res.body);
+    var responseData = json.decode(res.body);
+    if (responseData['status'] == 200) {
+      Navigator.push(
+          context,
+          SlideLeftRoute(
+              page: Setpassword(
+            phn_number: widget.phn_number,
+          )));
+    } else {
+      showDialog(
+          context: context,
+          builder: (context) =>
+              CustomDialogError("Error", responseData['message'], "Cancel"));
+    }
+    return res;
+  }
+
+  Future<http.Response> reSendOtp() async {
+    http.Response res = await http.post(
+      'https://www.mitrahtechnology.in/apis/mitrah-api/deliveryboy/forgot_password.php',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        "phn_number": widget.phn_number,
+      },
+    );
+
+    print(res.body);
+    var responseData = json.decode(res.body);
+    if (responseData['status'] == 200) {
+      showDialog(
+          context: context,
+          builder: (context) =>
+              CustomDialogError("Success", responseData['message'], "Cancel"));
+    } else if (responseData['status'] == 500) {
+      showDialog(
+          context: context,
+          builder: (context) =>
+              CustomDialogError("Error", responseData['message'], "Cancel"));
+    } else {
+      showDialog(
+          context: context,
+          builder: (context) =>
+              CustomDialogError("Error", responseData['message'], "Cancel"));
+
+      return res;
+    }
   }
 }

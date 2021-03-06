@@ -4,6 +4,12 @@ import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:dio/dio.dart';
 
 import 'package:postmasterdboy/Components/toast_utils.dart';
 import 'package:postmasterdboy/Components/animate.dart';
@@ -15,6 +21,7 @@ class Bankdetail extends StatefulWidget {
 
 class _BankdetailState extends State<Bankdetail> {
   var _formKey = GlobalKey<FormState>();
+
   final TextEditingController bankNameController = TextEditingController();
   final TextEditingController accountNumberController = TextEditingController();
   final TextEditingController confirmAccountNumberController =
@@ -87,7 +94,7 @@ class _BankdetailState extends State<Bankdetail> {
           elevation: 0,
           leading: IconButton(
             onPressed: () {
-              //Navigator.push(context, SlideRightRoute(page: Homepage()));
+              Navigator.pop(context);
             },
             icon: Icon(Icons.arrow_back_ios),
           ),
@@ -308,53 +315,106 @@ class _BankdetailState extends State<Bankdetail> {
                     "Please upload in pdf,jpeg",
                   ),
                 ),
-                Container(
-                  margin: const EdgeInsets.only(
-                      left: 190.0, right: 33.0, bottom: 5.0),
-                  padding: const EdgeInsets.all(3.0),
-                  decoration: BoxDecoration(
-                    color: Colors.green[400],
-                    //border: Border.all(color: Colors.blueAccent),
-                    borderRadius: const BorderRadius.all(
-                      const Radius.circular(30.0),
-                    ),
-                  ),
-                  child: Center(
-                    child: Container(
-                      margin: EdgeInsets.only(
-                        top: 12.0,
-                        bottom: 12.0,
+                InkWell(
+                  onTap: () {
+                    showMaterialModalBottomSheet(
+                      context: context,
+                      builder: (context) => Container(
+                        height: 100.0,
+                        width: MediaQuery.of(context).size.width,
+                        margin:
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                        child: Column(
+                          children: [
+                            Text(
+                              "Chose profile photo",
+                              style: TextStyle(fontSize: 20.0),
+                            ),
+                            SizedBox(height: 20),
+                            Row(children: <Widget>[
+                              FlatButton.icon(
+                                icon: Icon(Icons.camera),
+                                onPressed: () {
+                                  getImage(ImageSource.camera);
+                                },
+                                label: Text("Camera"),
+                              ),
+                              FlatButton.icon(
+                                icon: Icon(Icons.image),
+                                onPressed: () {
+                                  getImage(ImageSource.gallery);
+                                },
+                                label: Text("Gallery"),
+                              ),
+                            ])
+                          ],
+                        ),
                       ),
-                      child: Text(
-                        "Upload",
-                        style: TextStyle(
-                            fontFamily: 'Roboto',
-                            fontSize: 18,
-                            color: Colors.white),
+                    );
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(
+                        left: 190.0, right: 33.0, bottom: 5.0),
+                    padding: const EdgeInsets.all(3.0),
+                    decoration: BoxDecoration(
+                      color: Colors.green[400],
+                      //border: Border.all(color: Colors.blueAccent),
+                      borderRadius: const BorderRadius.all(
+                        const Radius.circular(30.0),
+                      ),
+                    ),
+                    child: Center(
+                      child: Container(
+                        margin: EdgeInsets.only(
+                          top: 12.0,
+                          bottom: 12.0,
+                        ),
+                        child: Text(
+                          "Upload",
+                          style: TextStyle(
+                              fontFamily: 'Roboto',
+                              fontSize: 18,
+                              color: Colors.white),
+                        ),
                       ),
                     ),
                   ),
                 ),
                 SizedBox(height: 15.0),
-                Container(
-                  margin: const EdgeInsets.only(left: 33.0, right: 33.0),
-                  padding: const EdgeInsets.all(3.0),
-                  decoration: BoxDecoration(
-                    color: Colors.green[400],
-                    //border: Border.all(color: Colors.blueAccent),
-                    borderRadius: const BorderRadius.all(
-                      const Radius.circular(30.0),
+                InkWell(
+                  onTap: () {
+                    if (_formKey.currentState.validate()) {
+                      if (accountNumberController.text ==
+                          confirmAccountNumberController.text) {
+                        saveBankData();
+                      } else {
+                        showDialog(
+                            context: context,
+                            builder: (context) => CustomDialogError("Error",
+                                "Account number should be same", "Cancel"));
+                      }
+                    }
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(left: 33.0, right: 33.0),
+                    padding: const EdgeInsets.all(3.0),
+                    decoration: BoxDecoration(
+                      color: Colors.green[400],
+                      //border: Border.all(color: Colors.blueAccent),
+                      borderRadius: const BorderRadius.all(
+                        const Radius.circular(30.0),
+                      ),
                     ),
-                  ),
-                  child: Center(
-                    child: Container(
-                      margin: EdgeInsets.only(top: 15.0, bottom: 15.0),
-                      child: Text(
-                        "Finish",
-                        style: TextStyle(
-                            fontFamily: 'Roboto',
-                            fontSize: 18,
-                            color: Colors.white),
+                    child: Center(
+                      child: Container(
+                        margin: EdgeInsets.only(top: 15.0, bottom: 15.0),
+                        child: Text(
+                          "Finish",
+                          style: TextStyle(
+                              fontFamily: 'Roboto',
+                              fontSize: 18,
+                              color: Colors.white),
+                        ),
                       ),
                     ),
                   ),
@@ -368,43 +428,68 @@ class _BankdetailState extends State<Bankdetail> {
     );
   }
 
-  /* Future<http.Response> loginUser() async {
-    String user_id = user_idController.text;
-    String user_pass = user_passController.text;
+  void saveBankData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    http.Response res = await http.post(
-      'https://www.mitrahtechnology.in/apis/mitrah-api/login.php',
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        "user_id": user_id,
-        "password": user_pass,
-      },
-    );
-    print(res.body);
+    String token = prefs.getString("token");
+    print(token);
+    Dio dio = new Dio();
+
+    FormData data = FormData.fromMap({
+      "cancel_cheque_image": await MultipartFile.fromFile(
+        _selectedFile.path,
+        filename: _selectedFile.path.split('/').last,
+      ),
+    });
+
+    dio.options.headers["Authorization"] = token;
+    dio.options.headers["account_number"] = accountNumberController.text;
+    dio.options.headers["bank_name"] = bankNameController.text;
+    dio.options.headers["ifsc_code"] = ifscController.text;
+    dio.options.headers["branch"] = branchNameController.text;
+
+    dio
+        .post(
+      'https://www.mitrahtechnology.in/apis/mitrah-api/deliveryboy/add_bank_detail.php',
+      data: data,
+    )
+        .then((response) {
+      var jsonResponse = jsonDecode(response.toString());
+      if (jsonResponse['status'] == 200) {
+        showDialog(
+          context: context,
+          builder: (context) =>
+              CustomDialog("Success", jsonResponse['message'], "Okay", 2),
+        );
+      } else {
+        showDialog(
+            context: context,
+            builder: (context) =>
+                CustomDialogError("Error", jsonResponse['message'], "Cancel"));
+      }
+      // var testData = jsonResponse['histogram_counts'].cast<double>();
+      // var averageGrindSize = jsonResponse['average_particle_size'];
+    }).catchError((error) => print(error));
+
+    /*print(res.body);
     var responseData = json.decode(res.body);
-    print(responseData['token']);
-    if (responseData['success'] == 1) {
-      var data = responseData["user_details"];
-      //SharedPreferences.setMockInitialValues({});
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-
-      prefs.setString('token', responseData['token']);
-      prefs.setString('first_name', data['first_name']);
-      prefs.setString('last_name', data['last_name']);
-      prefs.setString('email', data['email']);
-      prefs.setString('phn_number', data['phn_number']);
-      //SharedPreferences prefs = await SharedPreferences.getInstance();
-
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (BuildContext context) => Dashboard()));
-
-      ToastUtils.showCustomToast(context, "Sign in Successfully");
+    if (responseData['status'] == 200) {
+      showDialog(
+        context: context,
+        builder: (context) =>
+            CustomDialog("Success", responseData['message'], "Okay", 2),
+      );
+      //Navigator.push(context, SlideLeftRoute(page: Profile()));
+    } else if (responseData['status'] == 500) {
+      showDialog(
+          context: context,
+          builder: (context) =>
+              CustomDialogError("Error", "User already Exists", "Cancel"));
     } else {
       showDialog(
           context: context,
           builder: (context) =>
               CustomDialogError("Error", responseData['message'], "Cancel"));
-    }
-    return res;
-  }*/
+    }*/
+  }
 }

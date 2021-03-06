@@ -5,10 +5,10 @@ import 'package:postmasterdboy/Components/toast_utils.dart';
 import 'package:postmasterdboy/Components/animate.dart';
 import 'package:flutter/services.dart';
 
-//import 'package:http/http.dart' as http;
-//import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter/services.dart';
 
-//import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'dart:async';
 import 'dart:convert';
@@ -96,13 +96,9 @@ class _ForgotpasswordState extends State<Forgotpassword> {
                       WhitelistingTextInputFormatter.digitsOnly,
                     ],
                     validator: (String value) {
-                      if (value.isEmpty) {
+                      if (value.isEmpty && value.length < 10) {
                         return "Please enter valid mobile number.";
                       }
-                      /*if (!EmailValidator.validate(value)) {
-                          return "Enter valid email";
-                        }*/
-                      //return "";
                     },
                     decoration: InputDecoration(
                         counterText: "",
@@ -116,7 +112,9 @@ class _ForgotpasswordState extends State<Forgotpassword> {
                 SizedBox(height: 25.0),
                 InkWell(
                   onTap: () {
-                    Navigator.push(context, SlideRightRoute(page: Otpclass()));
+                    if (_formKey.currentState.validate()) {
+                      sendOtp();
+                    }
                   },
                   child: Container(
                     margin: const EdgeInsets.only(left: 33.0, right: 33.0),
@@ -150,37 +148,22 @@ class _ForgotpasswordState extends State<Forgotpassword> {
     );
   }
 
-  /* Future<http.Response> loginUser() async {
-    String user_id = user_idController.text;
-    String user_pass = user_passController.text;
-
+  Future<http.Response> sendOtp() async {
     http.Response res = await http.post(
-      'https://www.mitrahtechnology.in/apis/mitrah-api/login.php',
+      'https://www.mitrahtechnology.in/apis/mitrah-api/deliveryboy/forgot_password.php',
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
-        "user_id": user_id,
-        "password": user_pass,
+        "phn_number": mobileNumberController.text
       },
     );
     print(res.body);
     var responseData = json.decode(res.body);
-    print(responseData['token']);
-    if (responseData['success'] == 1) {
-      var data = responseData["user_details"];
-      //SharedPreferences.setMockInitialValues({});
-      SharedPreferences prefs = await SharedPreferences.getInstance();
 
-      prefs.setString('token', responseData['token']);
-      prefs.setString('first_name', data['first_name']);
-      prefs.setString('last_name', data['last_name']);
-      prefs.setString('email', data['email']);
-      prefs.setString('phn_number', data['phn_number']);
-      //SharedPreferences prefs = await SharedPreferences.getInstance();
-
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (BuildContext context) => Dashboard()));
-
-      ToastUtils.showCustomToast(context, "Sign in Successfully");
+    if (responseData['status'] == 200) {
+      Navigator.push(
+          context,
+          SlideRightRoute(
+              page: Otpclass(phn_number: mobileNumberController.text)));
     } else {
       showDialog(
           context: context,
@@ -188,5 +171,5 @@ class _ForgotpasswordState extends State<Forgotpassword> {
               CustomDialogError("Error", responseData['message'], "Cancel"));
     }
     return res;
-  }*/
+  }
 }

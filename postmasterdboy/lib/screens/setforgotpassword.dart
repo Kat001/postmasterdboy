@@ -1,15 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:postmasterdboy/Components/animate.dart';
+import 'package:postmasterdboy/screens/login.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class Setpassword extends StatefulWidget {
+  Setpassword({
+    Key key,
+    this.phn_number,
+  }) : super(key: key);
+  final String phn_number;
   @override
   _SetpasswordState createState() => _SetpasswordState();
 }
 
 class _SetpasswordState extends State<Setpassword> {
   var _formKey = GlobalKey<FormState>();
-  final TextEditingController user_idController = TextEditingController();
-  final TextEditingController user_passController = TextEditingController();
+  final TextEditingController newPasswordController = TextEditingController();
+  final TextEditingController confirmNewPasswordController =
+      TextEditingController();
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -23,7 +33,7 @@ class _SetpasswordState extends State<Setpassword> {
           elevation: 0,
           leading: IconButton(
             onPressed: () {
-              //Navigator.push(context, SlideRightRoute(page: Homepage()));
+              Navigator.pop(context);
             },
             icon: Icon(Icons.arrow_back_ios),
           ),
@@ -82,7 +92,7 @@ class _SetpasswordState extends State<Setpassword> {
                     ),
                   ),
                   child: TextFormField(
-                    controller: user_idController,
+                    controller: newPasswordController,
                     validator: (String value) {
                       if (value.isEmpty) {
                         return "Please enter valid username.";
@@ -111,7 +121,7 @@ class _SetpasswordState extends State<Setpassword> {
                     ),
                   ),
                   child: TextFormField(
-                    controller: user_idController,
+                    controller: confirmNewPasswordController,
                     validator: (String value) {
                       if (value.isEmpty) {
                         return "Please enter valid username.";
@@ -130,25 +140,35 @@ class _SetpasswordState extends State<Setpassword> {
                   ),
                 ),
                 SizedBox(height: 20.0),
-                Container(
-                  margin: const EdgeInsets.only(left: 33.0, right: 33.0),
-                  padding: const EdgeInsets.all(3.0),
-                  decoration: BoxDecoration(
-                    color: Colors.green[400],
-                    //border: Border.all(color: Colors.blueAccent),
-                    borderRadius: const BorderRadius.all(
-                      const Radius.circular(30.0),
+                InkWell(
+                  onTap: () {
+                    if (_formKey.currentState.validate()) {
+                      if (newPasswordController.text ==
+                          confirmNewPasswordController.text) {
+                        savePassword();
+                      }
+                    }
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(left: 33.0, right: 33.0),
+                    padding: const EdgeInsets.all(3.0),
+                    decoration: BoxDecoration(
+                      color: Colors.green[400],
+                      //border: Border.all(color: Colors.blueAccent),
+                      borderRadius: const BorderRadius.all(
+                        const Radius.circular(30.0),
+                      ),
                     ),
-                  ),
-                  child: Center(
-                    child: Container(
-                      margin: EdgeInsets.only(top: 15.0, bottom: 15.0),
-                      child: Text(
-                        "Done",
-                        style: TextStyle(
-                            fontFamily: 'Roboto',
-                            fontSize: 18,
-                            color: Colors.white),
+                    child: Center(
+                      child: Container(
+                        margin: EdgeInsets.only(top: 15.0, bottom: 15.0),
+                        child: Text(
+                          "Done",
+                          style: TextStyle(
+                              fontFamily: 'Roboto',
+                              fontSize: 18,
+                              color: Colors.white),
+                        ),
                       ),
                     ),
                   ),
@@ -161,43 +181,34 @@ class _SetpasswordState extends State<Setpassword> {
     );
   }
 
-  /* Future<http.Response> loginUser() async {
-    String user_id = user_idController.text;
-    String user_pass = user_passController.text;
+  Future<http.Response> savePassword() async {
+    String pass = newPasswordController.text;
 
     http.Response res = await http.post(
-      'https://www.mitrahtechnology.in/apis/mitrah-api/login.php',
+      'https://www.mitrahtechnology.in/apis/mitrah-api/deliveryboy/forgot_password_update.php',
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
-        "user_id": user_id,
-        "password": user_pass,
+        "new_password": pass,
+        "phn_number": widget.phn_number,
       },
     );
     print(res.body);
     var responseData = json.decode(res.body);
-    print(responseData['token']);
-    if (responseData['success'] == 1) {
-      var data = responseData["user_details"];
-      //SharedPreferences.setMockInitialValues({});
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-
-      prefs.setString('token', responseData['token']);
-      prefs.setString('first_name', data['first_name']);
-      prefs.setString('last_name', data['last_name']);
-      prefs.setString('email', data['email']);
-      prefs.setString('phn_number', data['phn_number']);
-      //SharedPreferences prefs = await SharedPreferences.getInstance();
-
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (BuildContext context) => Dashboard()));
-
-      ToastUtils.showCustomToast(context, "Sign in Successfully");
+    if (responseData['status'] == 200) {
+      print("jhkjasdhjk");
+      Navigator.push(context, SlideLeftRoute(page: Login()));
+      showDialog(
+        context: context,
+        builder: (context) =>
+            CustomDialog("Success", responseData['message'], "Okay", 3),
+      );
     } else {
       showDialog(
           context: context,
           builder: (context) =>
               CustomDialogError("Error", responseData['message'], "Cancel"));
     }
+
     return res;
-  }*/
+  }
 }

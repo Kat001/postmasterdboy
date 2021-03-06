@@ -36,6 +36,11 @@ dependencies:
   modal_bottom_sheet: ^1.0.0+1
   email_validator: '^1.0.5'
   shared_preferences: ^0.5.12+4
+  share: ^0.6.5
+  dio: ^3.0.10
+  #social_share: ^2.0.5
+
+
 
 
 

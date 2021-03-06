@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
+
 import 'package:postmasterdboy/screens/login.dart';
 
-import 'package:postmasterdboy/screens/profile.dart';
-//import 'package:postmaster/Screens/faq.dart';
-//import 'package:postmaster/Screens/privacy.dart';
-//import 'package:postmaster/Screens/terms.dart';
 import 'Screens/Homepage.dart';
-//import 'Screens/Login.dart';
+
 import 'package:sizer/sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-//import 'package:flutter/scheduler.dart';
 
 void main() => runApp(Myapp());
 
@@ -64,7 +59,7 @@ class _MyappState extends State<Myapp> {
                 primaryColor: Color(0xFF27DEBF),
                 dividerColor: Colors.transparent,
               ),
-              home: Login(), //Mysubscription(),
+              home: isLoggedIn ? Homepage() : Login(),
             );
           },
         );
