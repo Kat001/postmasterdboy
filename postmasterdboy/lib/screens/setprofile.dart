@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:postmasterdboy/Components/sizes_helpers.dart';
+import 'package:postmasterdboy/screens/resetpassword.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:email_validator/email_validator.dart';
 import 'dart:async';
@@ -288,13 +289,19 @@ class _SetprofileState extends State<Setprofile> {
                         margin: new EdgeInsets.only(bottom: 30, top: 30.0),
                         child: InkWell(
                           onTap: () {},
-                          child: Text(
-                            " Click Here",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: Color(0xFF27DEBF),
-                                fontSize: 16.0,
-                                fontFamily: 'Roboto'),
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.push(context,
+                                  SlideLeftRoute(page: SetNewPassword()));
+                            },
+                            child: Text(
+                              " Click Here",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: Color(0xFF27DEBF),
+                                  fontSize: 16.0,
+                                  fontFamily: 'Roboto'),
+                            ),
                           ),
                         ),
                       ),
@@ -314,7 +321,6 @@ class _SetprofileState extends State<Setprofile> {
       "name": "TEST BHAI",
       "email": _emailController.text,
       "phn_number": _phoneController.text,
-      "password": "ABCD@a1234",
       "address": "TEST"
     };
     var body = json.encode(data);
@@ -348,7 +354,7 @@ class _SetprofileState extends State<Setprofile> {
       showDialog(
           context: context,
           builder: (context) =>
-              CustomDialogError("Error", "User already Exists", "Cancel"));
+              CustomDialogError("Error", responseData['message'], "Cancel"));
     } else {
       showDialog(
           context: context,

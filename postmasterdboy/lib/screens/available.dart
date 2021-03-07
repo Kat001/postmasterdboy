@@ -9,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:postmasterdboy/Components/toast_utils.dart';
 import 'package:postmasterdboy/Components/sizes_helpers.dart';
 import 'package:flutter/material.dart';
+import 'package:postmasterdboy/screens/active_orders.dart';
 import 'package:postmasterdboy/screens/takeorder.dart';
 
 import 'package:sizer/sizer.dart';
@@ -18,6 +19,11 @@ import 'package:postmasterdboy/Components/sizes_helpers.dart';
 import 'package:postmasterdboy/Components/animate.dart';
 
 import 'package:postmasterdboy/Components/animate.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'dart:async';
 import 'dart:convert';
@@ -29,6 +35,44 @@ class Available extends StatefulWidget {
 
 class _AvailableState extends State<Available> {
   final _formKey = GlobalKey<FormState>();
+  bool _isData = false;
+
+  List<dynamic> orderPackage = [];
+  List<dynamic> orderShop = [];
+  List<dynamic> orderRestaurant = [];
+
+  @override
+  void initState() {
+    super.initState();
+    availableOrders();
+  }
+
+  Future<void> availableOrders() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    String token = prefs.getString("token");
+    http.Response res = await http.post(
+      'https://www.mitrahtechnology.in/apis/mitrah-api/deliveryboy/available_order.php',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': token,
+      },
+    );
+    //print(res.body);
+    var responseData = json.decode(res.body);
+
+    if (responseData["status"] == 200) {
+      //print(responseData["order_package"]);
+      setState(() {
+        orderPackage = responseData["order_package"];
+        orderShop = responseData["order_shop"];
+        orderRestaurant = responseData["order_restaurant"];
+      });
+      setState(() {
+        _isData = true;
+      });
+    } else {}
+  }
 
   Widget orderWidget(String orderid, String orderTotal, String pickUpAddress,
       String dropAddress) {
@@ -180,32 +224,83 @@ class _AvailableState extends State<Available> {
               ],
             ),
             body: TabBarView(children: [
-              SingleChildScrollView(
+              Container(
+                child: _isData
+                    ? ListView.builder(
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: EdgeInsets.symmetric(vertical: 16.0),
+                            child: Column(
+                              children: <Widget>[
+                                ListView.builder(
+                                    itemCount: orderPackage.length,
+                                    shrinkWrap:
+                                        true, // todo comment this out and check the result
+                                    physics: ClampingScrollPhysics(),
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return orderWidget(
+                                          orderPackage[index]["id"],
+                                          "orderTotal",
+                                          "pickUpAddress",
+                                          "dropAddress");
+                                    }),
+                                ListView.builder(
+                                    itemCount: orderShop.length,
+                                    shrinkWrap:
+                                        true, // todo comment this out and check the result
+                                    physics: ClampingScrollPhysics(),
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return orderWidget(
+                                          orderShop[index]["shop_order_id"],
+                                          "orderTotal",
+                                          "pickUpAddress",
+                                          "dropAddress");
+                                    }),
+                                ListView.builder(
+                                    itemCount: orderRestaurant.length,
+                                    shrinkWrap:
+                                        true, // todo comment this out and check the result
+                                    physics: ClampingScrollPhysics(),
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return orderWidget(
+                                          "orderShop[index][shop_order_id]",
+                                          "orderTotal",
+                                          "pickUpAddress",
+                                          "dropAddress");
+                                    }),
+                              ],
+                            ),
+                          );
+                        },
+                        itemCount: 1,
+                      )
+                    : Center(child: CircularProgressIndicator()),
+              ),
+
+              /*SingleChildScrollView(
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      orderWidget("123", "Pick-off : 06:30 PM",
-                          "Drop-off : 7:50 PM", "jdsjkks"),
-                      orderWidget("123", "Pick-off : 06:30 PM",
-                          "Drop-off : 7:50 PM", "jdsjkks"),
-                      orderWidget("123", "Pick-off : 06:30 PM",
-                          "Drop-off : 7:50 PM", "jdsjkks"),
-                      orderWidget("123", "Pick-off : 06:30 PM",
-                          "Drop-off : 7:50 PM", "jdsjkks"),
-                      orderWidget("123", "Pick-off : 06:30 PM",
-                          "Drop-off : 7:50 PM", "jdsjkks"),
-                      orderWidget("123", "Pick-off : 06:30 PM",
-                          "Drop-off : 7:50 PM", "jdsjkks"),
-                      orderWidget("123", "Pick-off : 06:30 PM",
-                          "Drop-off : 7:50 PM", "jdsjkks"),
+
+                      InkWell(
+                        onTap: () {
+                          if (_isData == true) {
+                            for (var i = 0; i < orderPackage.length; i++) {
+                              print(orderPackage[i]['id']);
+                            }
+                          }
+                        },
+                        child: Center(child: Text("Click here")),
+                      ),
                     ]),
-              ),
+              ),*/
               Container(
-                  child: Center(
-                child: Text("hjk"),
-              ) //ActiveOrders(),
-                  ),
+                child: Activeorders(), //ActiveOrders(),
+              ),
               Center(
                 child: Container(
                   child: Text("Completed Orders"),
