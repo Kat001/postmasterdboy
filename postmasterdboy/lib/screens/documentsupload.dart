@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 
 import 'package:postmasterdboy/Components/toast_utils.dart';
 import 'package:postmasterdboy/Components/animate.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class Documentupload extends StatefulWidget {
   @override
@@ -17,10 +18,18 @@ class _DocumentuploadState extends State<Documentupload> {
   final TextEditingController user_idController = TextEditingController();
   final TextEditingController user_passController = TextEditingController();
 
-  File _selectedFile;
+  //File _selectedFile;
+  File _aadhaarCardFrontFile;
+  File _aadhaarCardBackFile;
+  File _drivingLicenceFrontFile;
+  File _drivingLicenceBackFile;
+  File _passportFile;
+  File _pucFile;
+  File _rcBookFile;
+
   bool _inProcess = false;
 
-  Widget getImageWidget() {
+  Widget getImageWidget(File _selectedFile) {
     if (_selectedFile != null) {
       return Image.file(
         _selectedFile,
@@ -38,7 +47,43 @@ class _DocumentuploadState extends State<Documentupload> {
     }
   }
 
-  getImage(ImageSource source) async {
+  showDownPopUp(File _selectedFile) {
+    showMaterialModalBottomSheet(
+      context: context,
+      builder: (context) => Container(
+        height: 100.0,
+        width: MediaQuery.of(context).size.width,
+        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        child: Column(
+          children: [
+            Text(
+              "Chose profile photo",
+              style: TextStyle(fontSize: 20.0),
+            ),
+            SizedBox(height: 20),
+            Row(children: <Widget>[
+              FlatButton.icon(
+                icon: Icon(Icons.camera),
+                onPressed: () {
+                  getImage(ImageSource.camera, _selectedFile);
+                },
+                label: Text("Camera"),
+              ),
+              FlatButton.icon(
+                icon: Icon(Icons.image),
+                onPressed: () {
+                  getImage(ImageSource.gallery, _selectedFile);
+                },
+                label: Text("Gallery"),
+              ),
+            ])
+          ],
+        ),
+      ),
+    );
+  }
+
+  getImage(ImageSource source, File _selectedFile) async {
     this.setState(() {
       _inProcess = true;
     });
@@ -59,8 +104,14 @@ class _DocumentuploadState extends State<Documentupload> {
           ));
 
       this.setState(() {
-        _selectedFile = cropped;
-        _inProcess = false;
+        if (_selectedFile == _aadhaarCardFrontFile) {
+          _aadhaarCardFrontFile = cropped;
+          _inProcess = false;
+        }
+        if (_selectedFile == _aadhaarCardBackFile) {
+          _aadhaarCardBackFile = cropped;
+          _inProcess = false;
+        }
       });
     } else {
       this.setState(() {
@@ -137,7 +188,7 @@ class _DocumentuploadState extends State<Documentupload> {
                       const Radius.circular(30.0),
                     ),
                   ),
-                  child: getImageWidget(),
+                  child: getImageWidget(_aadhaarCardFrontFile),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 33, bottom: 5.0),
@@ -145,26 +196,31 @@ class _DocumentuploadState extends State<Documentupload> {
                     "Please upload in pdf,jpeg",
                   ),
                 ),
-                Container(
-                  margin: const EdgeInsets.only(
-                      left: 190.0, right: 33.0, bottom: 5.0),
-                  padding: const EdgeInsets.all(3.0),
-                  decoration: BoxDecoration(
-                    color: Colors.green[400],
-                    //border: Border.all(color: Colors.blueAccent),
-                    borderRadius: const BorderRadius.all(
-                      const Radius.circular(30.0),
+                InkWell(
+                  onTap: () {
+                    showDownPopUp(_aadhaarCardFrontFile);
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(
+                        left: 190.0, right: 33.0, bottom: 5.0),
+                    padding: const EdgeInsets.all(3.0),
+                    decoration: BoxDecoration(
+                      color: Colors.green[400],
+                      //border: Border.all(color: Colors.blueAccent),
+                      borderRadius: const BorderRadius.all(
+                        const Radius.circular(30.0),
+                      ),
                     ),
-                  ),
-                  child: Center(
-                    child: Container(
-                      margin: EdgeInsets.only(top: 12.0, bottom: 12.0),
-                      child: Text(
-                        "Upload",
-                        style: TextStyle(
-                            fontFamily: 'Roboto',
-                            fontSize: 18,
-                            color: Colors.white),
+                    child: Center(
+                      child: Container(
+                        margin: EdgeInsets.only(top: 12.0, bottom: 12.0),
+                        child: Text(
+                          "Upload",
+                          style: TextStyle(
+                              fontFamily: 'Roboto',
+                              fontSize: 18,
+                              color: Colors.white),
+                        ),
                       ),
                     ),
                   ),
@@ -189,7 +245,7 @@ class _DocumentuploadState extends State<Documentupload> {
                       const Radius.circular(30.0),
                     ),
                   ),
-                  child: getImageWidget(),
+                  child: getImageWidget(_aadhaarCardBackFile),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 33, bottom: 5.0),
@@ -197,26 +253,31 @@ class _DocumentuploadState extends State<Documentupload> {
                     "Please upload in pdf,jpeg",
                   ),
                 ),
-                Container(
-                  margin: const EdgeInsets.only(
-                      left: 190.0, right: 33.0, bottom: 5.0),
-                  padding: const EdgeInsets.all(3.0),
-                  decoration: BoxDecoration(
-                    color: Colors.green[400],
-                    //border: Border.all(color: Colors.blueAccent),
-                    borderRadius: const BorderRadius.all(
-                      const Radius.circular(30.0),
+                InkWell(
+                  onTap: () {
+                    showDownPopUp(_aadhaarCardBackFile);
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(
+                        left: 190.0, right: 33.0, bottom: 5.0),
+                    padding: const EdgeInsets.all(3.0),
+                    decoration: BoxDecoration(
+                      color: Colors.green[400],
+                      //border: Border.all(color: Colors.blueAccent),
+                      borderRadius: const BorderRadius.all(
+                        const Radius.circular(30.0),
+                      ),
                     ),
-                  ),
-                  child: Center(
-                    child: Container(
-                      margin: EdgeInsets.only(top: 12.0, bottom: 12.0),
-                      child: Text(
-                        "Upload",
-                        style: TextStyle(
-                            fontFamily: 'Roboto',
-                            fontSize: 18,
-                            color: Colors.white),
+                    child: Center(
+                      child: Container(
+                        margin: EdgeInsets.only(top: 12.0, bottom: 12.0),
+                        child: Text(
+                          "Upload",
+                          style: TextStyle(
+                              fontFamily: 'Roboto',
+                              fontSize: 18,
+                              color: Colors.white),
+                        ),
                       ),
                     ),
                   ),
@@ -241,7 +302,7 @@ class _DocumentuploadState extends State<Documentupload> {
                       const Radius.circular(30.0),
                     ),
                   ),
-                  child: getImageWidget(),
+                  child: getImageWidget(_drivingLicenceBackFile),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 33, bottom: 5.0),
@@ -293,7 +354,7 @@ class _DocumentuploadState extends State<Documentupload> {
                       const Radius.circular(30.0),
                     ),
                   ),
-                  child: getImageWidget(),
+                  child: getImageWidget(_drivingLicenceBackFile),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 33, bottom: 5.0),
@@ -345,7 +406,7 @@ class _DocumentuploadState extends State<Documentupload> {
                       const Radius.circular(30.0),
                     ),
                   ),
-                  child: getImageWidget(),
+                  child: getImageWidget(_passportFile),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 33, bottom: 5.0),
@@ -397,7 +458,7 @@ class _DocumentuploadState extends State<Documentupload> {
                       const Radius.circular(30.0),
                     ),
                   ),
-                  child: getImageWidget(),
+                  child: getImageWidget(_pucFile),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 33, bottom: 5.0),
@@ -449,7 +510,7 @@ class _DocumentuploadState extends State<Documentupload> {
                       const Radius.circular(30.0),
                     ),
                   ),
-                  child: getImageWidget(),
+                  child: getImageWidget(_rcBookFile),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 33, bottom: 5.0),

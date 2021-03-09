@@ -10,7 +10,7 @@ import 'package:postmasterdboy/Components/toast_utils.dart';
 import 'package:postmasterdboy/Components/sizes_helpers.dart';
 import 'package:postmasterdboy/screens/available.dart';
 import 'package:postmasterdboy/screens/information.dart';
-import 'package:postmasterdboy/screens/takeorder2.dart';
+import 'package:postmasterdboy/screens/orderstatus.dart';
 import 'package:postmasterdboy/screens/setprofile.dart';
 import 'package:postmasterdboy/screens/chat.dart';
 import 'package:postmasterdboy/screens/available.dart';
@@ -181,7 +181,7 @@ Ornare leo non mollis id cursus. Eu euismod faucibus in leo ''',
               SizedBox(height: 30.0),
               InkWell(
                 onTap: () {
-                  Navigator.push(context, SlideLeftRoute(page: Takeorder2()));
+                  //Navigator.push(context, SlideLeftRoute(page: Takeorder2()));
                 },
                 child: Container(
                   margin: const EdgeInsets.only(left: 33.0, right: 33.0),

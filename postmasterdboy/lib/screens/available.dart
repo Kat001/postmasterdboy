@@ -241,8 +241,8 @@ class _AvailableState extends State<Available> {
                                         (BuildContext context, int index) {
                                       return orderWidget(
                                           orderPackage[index]["id"],
-                                          "orderTotal",
-                                          "pickUpAddress",
+                                          orderPackage[index]["pickup_date"],
+                                          orderPackage[index]["delivery_date"],
                                           "dropAddress");
                                     }),
                                 ListView.builder(
@@ -254,7 +254,7 @@ class _AvailableState extends State<Available> {
                                         (BuildContext context, int index) {
                                       return orderWidget(
                                           orderShop[index]["shop_order_id"],
-                                          "orderTotal",
+                                          orderShop[index]["order_total"],
                                           "pickUpAddress",
                                           "dropAddress");
                                     }),

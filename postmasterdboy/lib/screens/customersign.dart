@@ -10,7 +10,7 @@ import 'package:postmasterdboy/Components/toast_utils.dart';
 import 'package:postmasterdboy/Components/sizes_helpers.dart';
 import 'package:postmasterdboy/screens/available.dart';
 import 'package:postmasterdboy/screens/information.dart';
-import 'package:postmasterdboy/screens/takeorder2.dart';
+//import 'package:postmasterdboy/screens/takeorder2.dart';
 
 import 'package:postmasterdboy/screens/setprofile.dart';
 import 'package:postmasterdboy/screens/chat.dart';

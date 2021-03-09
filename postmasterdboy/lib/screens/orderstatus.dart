@@ -15,15 +15,15 @@ import 'package:postmasterdboy/screens/chat.dart';
 import 'package:postmasterdboy/screens/available.dart';
 import 'package:postmasterdboy/Components/customicons.dart';
 import 'package:postmasterdboy/Components/animate.dart';
-import 'package:postmasterdboy/screens/takeorder2.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
-class Takeorder2 extends StatefulWidget {
+class Orderstatus extends StatefulWidget {
   @override
-  _Takeorder2State createState() => _Takeorder2State();
+  _OrderstatusState createState() => _OrderstatusState();
 }
 
-class _Takeorder2State extends State<Takeorder2> {
+class _OrderstatusState extends State<Orderstatus> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
