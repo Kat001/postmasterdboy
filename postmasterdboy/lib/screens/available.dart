@@ -10,6 +10,7 @@ import 'package:postmasterdboy/Components/toast_utils.dart';
 import 'package:postmasterdboy/Components/sizes_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:postmasterdboy/screens/active_orders.dart';
+import 'package:postmasterdboy/screens/orderstatus.dart';
 import 'package:postmasterdboy/screens/takeorder.dart';
 
 import 'package:sizer/sizer.dart';
@@ -36,15 +37,21 @@ class Available extends StatefulWidget {
 class _AvailableState extends State<Available> {
   final _formKey = GlobalKey<FormState>();
   bool _isData = false;
+  bool _isActiveData = false;
 
   List<dynamic> orderPackage = [];
   List<dynamic> orderShop = [];
   List<dynamic> orderRestaurant = [];
 
+  List<dynamic> orderPackageActive = [];
+  List<dynamic> orderShopActive = [];
+  List<dynamic> orderRestaurantActive = [];
+
   @override
   void initState() {
     super.initState();
     availableOrders();
+    activeOrders();
   }
 
   Future<void> availableOrders() async {
@@ -65,11 +72,34 @@ class _AvailableState extends State<Available> {
       //print(responseData["order_package"]);
       setState(() {
         orderPackage = responseData["order_package"];
-        orderShop = responseData["order_shop"];
+        orderShopActive = responseData["order_shop"];
         orderRestaurant = responseData["order_restaurant"];
-      });
-      setState(() {
         _isData = true;
+      });
+    } else {}
+  }
+
+  Future<void> activeOrders() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    String token = prefs.getString("token");
+    http.Response res = await http.post(
+      'https://www.mitrahtechnology.in/apis/mitrah-api/deliveryboy/active_order.php',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': token,
+      },
+    );
+    //print(res.body);
+    var responseData = json.decode(res.body);
+
+    if (responseData["status"] == 200) {
+      //print(responseData["order_package"]);
+      setState(() {
+        orderPackageActive = responseData["order_package"];
+        orderShopActive = responseData["order_shop"];
+        orderRestaurantActive = responseData["order_restaurant"];
+        _isActiveData = true;
       });
     } else {}
   }
@@ -164,6 +194,111 @@ class _AvailableState extends State<Available> {
                     margin: EdgeInsets.only(top: 10.0, bottom: 10.0),
                     child: Text(
                       "Take Order",
+                      style: TextStyle(
+                          fontFamily: 'Roboto',
+                          fontSize: 18,
+                          color: Colors.white),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget orderWidgetActive(String orderid, String orderTotal,
+      String pickUpAddress, String dropAddress) {
+    return new Container(
+      margin: const EdgeInsets.all(15),
+      padding: const EdgeInsets.all(5.0),
+      decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey),
+          borderRadius: BorderRadius.circular(20),
+          color: Colors.grey[200], //Color(0xFFE4EDEF),
+          boxShadow: [
+            /* BoxShadow(
+              color: Color(0xFFF0F0F0),
+              blurRadius: 5.0,
+              spreadRadius: 5.0,
+            )*/
+          ]),
+      child: Container(
+        margin: EdgeInsets.all(8.0),
+        child: Column(
+          //mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              margin: EdgeInsets.only(left: 10.0),
+              child: Text(
+                "Order-id:#" + orderid,
+                style: TextStyle(
+                  fontFamily: "RobotoBold",
+                  fontSize: displayWidth(context) * 0.06,
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 15.0,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Expanded(
+                  child: Text(
+                    orderTotal,
+                    style: TextStyle(
+                      fontFamily: 'RobotoBold',
+                      color: Color(0xFF27DEBF),
+                      fontSize: displayWidth(context) * 0.04,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 8.0,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Expanded(
+                  child: Text(
+                    pickUpAddress,
+                    style: TextStyle(
+                      fontFamily: 'RobotoBold',
+                      color: Color(0xFF27DEBF),
+                      fontSize: displayWidth(context) * 0.04,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 15.0,
+            ),
+            InkWell(
+              onTap: () {
+                Navigator.push(context, SlideLeftRoute(page: Orderstatus()));
+              },
+              child: Container(
+                margin: const EdgeInsets.only(left: 30.0, right: 30.0),
+                padding: const EdgeInsets.all(3.0),
+                decoration: BoxDecoration(
+                  color: Colors.green[400],
+                  //border: Border.all(color: Colors.blueAccent),
+                  borderRadius: const BorderRadius.all(
+                    const Radius.circular(30.0),
+                  ),
+                ),
+                child: Center(
+                  child: Container(
+                    margin: EdgeInsets.only(top: 10.0, bottom: 10.0),
+                    child: Text(
+                      "Change Status",
                       style: TextStyle(
                           fontFamily: 'Roboto',
                           fontSize: 18,
@@ -279,27 +414,72 @@ class _AvailableState extends State<Available> {
                       )
                     : Center(child: CircularProgressIndicator()),
               ),
-
-              /*SingleChildScrollView(
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-
-                      InkWell(
-                        onTap: () {
-                          if (_isData == true) {
-                            for (var i = 0; i < orderPackage.length; i++) {
-                              print(orderPackage[i]['id']);
-                            }
-                          }
-                        },
-                        child: Center(child: Text("Click here")),
-                      ),
-                    ]),
-              ),*/
               Container(
-                child: Activeorders(), //ActiveOrders(),
+                child: _isActiveData
+                    ? ListView.builder(
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: EdgeInsets.symmetric(vertical: 16.0),
+                            child: Column(
+                              children: <Widget>[
+                                ListView.builder(
+                                    itemCount: orderPackageActive.length,
+                                    shrinkWrap:
+                                        true, // todo comment this out and check the result
+                                    physics: ClampingScrollPhysics(),
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return orderPackageActive.isEmpty
+                                          ? Container()
+                                          : orderWidgetActive(
+                                              orderPackage[index]["id"],
+                                              orderPackage[index]
+                                                  ["pickup_date"],
+                                              orderPackage[index]
+                                                  ["delivery_date"],
+                                              "dropAddress");
+                                    }),
+                                ListView.builder(
+                                    itemCount: orderShopActive.length,
+                                    shrinkWrap:
+                                        true, // todo comment this out and check the result
+                                    physics: ClampingScrollPhysics(),
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return orderShopActive.isEmpty
+                                          ? Container()
+                                          : orderWidgetActive(
+                                              orderPackage[index]["id"],
+                                              orderPackage[index]
+                                                  ["pickup_date"],
+                                              orderPackage[index]
+                                                  ["delivery_date"],
+                                              "dropAddress");
+                                    }),
+                                ListView.builder(
+                                    itemCount: orderRestaurantActive.length,
+                                    shrinkWrap:
+                                        true, // todo comment this out and check the result
+                                    physics: ClampingScrollPhysics(),
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return orderRestaurantActive.isEmpty
+                                          ? Container()
+                                          : orderWidgetActive(
+                                              orderPackage[index]["id"],
+                                              orderPackage[index]
+                                                  ["pickup_date"],
+                                              orderPackage[index]
+                                                  ["delivery_date"],
+                                              "dropAddress");
+                                    }),
+                              ],
+                            ),
+                          );
+                        },
+                        itemCount: 1,
+                      )
+                    : Center(child: CircularProgressIndicator()),
               ),
               Center(
                 child: Container(

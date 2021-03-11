@@ -38,6 +38,9 @@ dependencies:
   shared_preferences: ^0.5.12+4
   share: ^0.6.5
   dio: ^3.0.10
+  #flutter_signature_pad: ^2.0.3
+  syncfusion_flutter_signaturepad: ^18.4.47-beta
+
   #social_share: ^2.0.5
 
 

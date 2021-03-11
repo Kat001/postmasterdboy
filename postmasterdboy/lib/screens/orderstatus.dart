@@ -9,11 +9,16 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:postmasterdboy/Components/toast_utils.dart';
 import 'package:postmasterdboy/Components/sizes_helpers.dart';
 import 'package:postmasterdboy/screens/available.dart';
+import 'package:postmasterdboy/screens/customersign.dart';
 import 'package:postmasterdboy/screens/information.dart';
 import 'package:postmasterdboy/screens/setprofile.dart';
 import 'package:postmasterdboy/screens/chat.dart';
 import 'package:postmasterdboy/screens/available.dart';
 import 'package:postmasterdboy/Components/customicons.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:postmasterdboy/Components/animate.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -24,6 +29,23 @@ class Orderstatus extends StatefulWidget {
 }
 
 class _OrderstatusState extends State<Orderstatus> {
+  int _radioValue = 10;
+
+  void _handleRadioValueChange(int value) {
+    setState(() {
+      _radioValue = value;
+
+      switch (_radioValue) {
+        case 0:
+          break;
+        case 1:
+          break;
+        case 2:
+          break;
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -180,67 +202,102 @@ Ornare leo non mollis id cursus. Eu euismod faucibus in leo ''',
                   ],
                 ),
                 SizedBox(height: 30.0),
-                InkWell(
-                  onTap: () {
-                    //Navigator.push(context, SlideLeftRoute(page: Takeorder2()));
-                  },
-                  child: Container(
-                    margin: const EdgeInsets.only(left: 33.0, right: 33.0),
-                    padding: const EdgeInsets.all(3.0),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      //border: Border.all(color: Colors.blueAccent),
-                      borderRadius: const BorderRadius.all(
-                        const Radius.circular(20.0),
-                      ),
+                Container(
+                  margin: const EdgeInsets.only(left: 33.0, right: 33.0),
+                  padding: const EdgeInsets.all(3.0),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    //border: Border.all(color: Colors.blueAccent),
+                    borderRadius: const BorderRadius.all(
+                      const Radius.circular(20.0),
                     ),
-                    child: Center(
-                      child: Container(
-                        margin: EdgeInsets.only(top: 15.0, bottom: 15.0),
-                        child: Text(
-                          "Picked",
-                          style: TextStyle(
-                              fontFamily: 'RobotoBold',
-                              fontSize: 25,
-                              color: Colors.black),
-                        ),
+                  ),
+                  child: Center(
+                    child: Container(
+                      margin: EdgeInsets.only(top: 15.0, bottom: 15.0),
+                      child: Text(
+                        "Update Location",
+                        style: TextStyle(
+                            fontFamily: 'RobotoBold',
+                            fontSize: 25,
+                            color: Colors.black),
                       ),
                     ),
                   ),
                 ),
-                SizedBox(height: 30.0),
-                InkWell(
-                  onTap: () {
-                    //Navigator.push(context, SlideLeftRoute(page: Takeorder2()));
-                  },
-                  child: Container(
-                    margin: const EdgeInsets.only(left: 33.0, right: 33.0),
-                    padding: const EdgeInsets.all(3.0),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      //border: Border.all(color: Colors.blueAccent),
-                      borderRadius: const BorderRadius.all(
-                        const Radius.circular(20.0),
-                      ),
-                    ),
-                    child: Center(
-                      child: Container(
-                        margin: EdgeInsets.only(top: 15.0, bottom: 15.0),
-                        child: Text(
-                          "On The Way",
-                          style: TextStyle(
-                              fontFamily: 'RobotoBold',
-                              fontSize: 25,
-                              color: Colors.black),
+                SizedBox(height: 10.0),
+                Column(
+                  children: [
+                    Row(
+                      children: [
+                        new Radio(
+                          value: 0,
+                          groupValue: _radioValue,
+                          onChanged: _handleRadioValueChange,
                         ),
-                      ),
+                        InkWell(
+                          onTap: () {
+                            setState(() {
+                              _radioValue = 0;
+                            });
+                          },
+                          child: new Text(
+                            'Picked up',
+                            style: new TextStyle(fontSize: 26.0),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
+                    Row(
+                      children: [
+                        new Radio(
+                          value: 1,
+                          groupValue: _radioValue,
+                          onChanged: _handleRadioValueChange,
+                        ),
+                        InkWell(
+                          onTap: () {
+                            setState(() {
+                              _radioValue = 1;
+                            });
+                          },
+                          child: new Text(
+                            'On The Way',
+                            style: new TextStyle(
+                              fontSize: 26.0,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        new Radio(
+                          value: 2,
+                          groupValue: _radioValue,
+                          onChanged: _handleRadioValueChange,
+                        ),
+                        InkWell(
+                          onTap: () {
+                            setState(() {
+                              _radioValue = 2;
+                            });
+                          },
+                          child: new Text(
+                            'Just about to reach',
+                            style: new TextStyle(fontSize: 26.0),
+                          ),
+                        )
+                      ],
+                    ),
+                  ],
                 ),
                 SizedBox(height: 30.0),
                 InkWell(
                   onTap: () {
-                    //Navigator.push(context, SlideLeftRoute(page: Takeorder2()));
+                    //deliverNowotp();
+                    Navigator.push(
+                        context, SlideLeftRoute(page: Customersign()));
                   },
                   child: Container(
                     margin: const EdgeInsets.only(left: 33.0, right: 33.0),
@@ -256,7 +313,7 @@ Ornare leo non mollis id cursus. Eu euismod faucibus in leo ''',
                       child: Container(
                         margin: EdgeInsets.only(top: 15.0, bottom: 15.0),
                         child: Text(
-                          "Take Order",
+                          "Deliver now",
                           style: TextStyle(
                               fontFamily: 'Roboto',
                               fontSize: 18,
@@ -346,5 +403,30 @@ Ornare leo non mollis id cursus. Eu euismod faucibus in leo ''',
             ),
           ),
         ));
+  }
+
+  Future<http.Response> deliverNowotp() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString("token");
+
+    Map data = {
+      "phn_number": "phn_number1",
+    };
+    var body = json.encode(data);
+
+    http.Response res = await http.post(
+      'https://www.mitrahtechnology.in/apis/mitrah-api/deliveryboy/delivered_otp.php',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        "Authorization": token
+      },
+    );
+
+    print(res.body);
+    var responseData = json.decode(res.body);
+    if (responseData['status'] == 200) {
+      Navigator.push(context, SlideLeftRoute(page: Customersign()));
+    }
+    return res;
   }
 }

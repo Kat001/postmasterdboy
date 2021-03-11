@@ -18,6 +18,9 @@ import 'package:postmasterdboy/screens/available.dart';
 import 'package:postmasterdboy/Components/customicons.dart';
 import 'package:postmasterdboy/Components/animate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class Homepage extends StatefulWidget {
   @override
@@ -26,7 +29,7 @@ class Homepage extends StatefulWidget {
 
 class _HomepageState extends State<Homepage> {
   int _currentstate = 0;
-  bool _setDuty;
+  bool _setDuty = true;
   final List<Widget> _children = [
     Available(),
     Profile(),
@@ -43,8 +46,7 @@ class _HomepageState extends State<Homepage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _setDuty = true;
-    //setData();
+    setData();
   }
 
   void setData() async {
@@ -52,6 +54,43 @@ class _HomepageState extends State<Homepage> {
     setState(() {
       _setDuty = prefs.getBool("duty");
     });
+  }
+
+  Future<void> setDuty(int number) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String token = prefs.getString('token');
+
+    Map data = {
+      "is_active": number,
+    };
+
+    var body = json.encode(data);
+
+    http.Response res = await http.post(
+      'https://www.mitrahtechnology.in/apis/mitrah-api/deliveryboy/active_and_not_active.php',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        "Authorization": token,
+      },
+      body: body,
+    );
+    var responseData = json.decode(res.body);
+    if (responseData['status'] == 200) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => Homepage()),
+      );
+      showDialog(
+        context: context,
+        builder: (context) =>
+            CustomDialog("Success", responseData['message'], "Okay", 3),
+      );
+    } else {
+      showDialog(
+          context: context,
+          builder: (context) =>
+              CustomDialogError("Error", responseData['message'], "Cancel"));
+    }
   }
 
   @override
@@ -68,14 +107,11 @@ class _HomepageState extends State<Homepage> {
                   await SharedPreferences.getInstance();
               if (_setDuty == true) {
                 prefs.setBool("duty", false);
+                setDuty(0);
               } else {
                 prefs.setBool("duty", true);
+                setDuty(1);
               }
-
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Homepage()),
-              );
             },
             child: Container(
               margin: EdgeInsets.only(

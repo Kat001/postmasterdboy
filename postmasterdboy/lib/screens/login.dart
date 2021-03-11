@@ -256,7 +256,7 @@ class _LoginState extends State<Login> {
     print(responseData['token']);
     if (responseData['success'] == 1) {
       var data = responseData["delivery_boy_user_details"];
-      //SharedPreferences.setMockInitialValues({});
+      SharedPreferences.setMockInitialValues({});
       SharedPreferences prefs = await SharedPreferences.getInstance();
 
       prefs.setString('token', responseData['token']);
@@ -264,6 +264,7 @@ class _LoginState extends State<Login> {
       prefs.setString('last_name', data['last_name']);
       prefs.setString('email', data['email']);
       prefs.setString('phn_number', data['phn_number']);
+      prefs.setBool("duty", true);
 
       Navigator.pushReplacement(context,
           MaterialPageRoute(builder: (BuildContext context) => Homepage()));

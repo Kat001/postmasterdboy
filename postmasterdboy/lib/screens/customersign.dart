@@ -17,8 +17,17 @@ import 'package:postmasterdboy/screens/chat.dart';
 import 'package:postmasterdboy/screens/available.dart';
 import 'package:postmasterdboy/Components/customicons.dart';
 import 'package:postmasterdboy/Components/animate.dart';
+import 'package:postmasterdboy/screens/signature.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/services.dart';
+
+import 'dart:ui' as ui;
+import 'package:flutter/foundation.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
+import 'package:syncfusion_flutter_signaturepad/signaturepad.dart';
 
 class Customersign extends StatefulWidget {
   @override
@@ -26,6 +35,7 @@ class Customersign extends StatefulWidget {
 }
 
 class _CustomersignState extends State<Customersign> {
+  GlobalKey<SfSignaturePadState> signatureGlobalKey = GlobalKey();
   FocusNode pin2FocusNode;
   FocusNode pin3FocusNode;
   FocusNode pin4FocusNode;
@@ -38,6 +48,8 @@ class _CustomersignState extends State<Customersign> {
   final TextEditingController _fourthController = TextEditingController();
   final TextEditingController _fifthController = TextEditingController();
   final TextEditingController _sixthController = TextEditingController();
+
+  Image _sign;
 
   @override
   void initState() {
@@ -62,6 +74,18 @@ class _CustomersignState extends State<Customersign> {
   void nextField(String value, FocusNode focusNode) {
     if (value.length == 1) {
       focusNode.requestFocus();
+    }
+  }
+
+  void _handleClearButtonPressed() {
+    signatureGlobalKey.currentState.clear();
+  }
+
+  void _handleSaveButtonPressed() async {
+    final data = await signatureGlobalKey.currentState.toImage(pixelRatio: 3.0);
+    final bytes = await data.toByteData(format: ui.ImageByteFormat.png);
+    if (data != null) {
+      _sign = Image.memory(bytes.buffer.asUint8List());
     }
   }
 
@@ -272,12 +296,17 @@ class _CustomersignState extends State<Customersign> {
                       )),
                   SizedBox(height: 10.0),
                   Center(
-                      child: Text(
-                    "Resend",
-                    style: TextStyle(
-                      color: Colors.green,
-                      fontFamily: 'RobotoBold',
-                      fontSize: displayWidth(context) * 0.05,
+                      child: InkWell(
+                    onTap: () {
+                      reSendOtp();
+                    },
+                    child: Text(
+                      "Resend",
+                      style: TextStyle(
+                        color: Colors.green,
+                        fontFamily: 'RobotoBold',
+                        fontSize: displayWidth(context) * 0.05,
+                      ),
                     ),
                   )),
                   Center(
@@ -297,20 +326,60 @@ class _CustomersignState extends State<Customersign> {
                       ),
                     ),
                   ),
-                  Container(
-                    height: 300.0,
-                    margin: const EdgeInsets.all(15),
-                    padding: const EdgeInsets.all(5.0),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(20),
-                      color: Colors.grey[200], //Color(0xFFE4EDEF),
+                  InkWell(
+                    onTap: () {},
+                    child: Container(
+                        height: 300.0,
+                        margin: const EdgeInsets.all(15),
+                        padding: const EdgeInsets.all(5.0),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(20),
+                          color: Colors.grey[200], //Color(0xFFE4EDEF),
+                        ),
+                        child: Container(
+                            child: SfSignaturePad(
+                                key: signatureGlobalKey,
+                                backgroundColor: Colors.white,
+                                strokeColor: Colors.black,
+                                minimumStrokeWidth: 1.0,
+                                maximumStrokeWidth: 4.0),
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.grey)))),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      _handleClearButtonPressed();
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.only(
+                          left: 190.0, right: 33.0, bottom: 5.0),
+                      padding: const EdgeInsets.all(3.0),
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        //border: Border.all(color: Colors.blueAccent),
+                        borderRadius: const BorderRadius.all(
+                          const Radius.circular(30.0),
+                        ),
+                      ),
+                      child: Center(
+                        child: Container(
+                          margin: EdgeInsets.only(top: 12.0, bottom: 12.0),
+                          child: Text(
+                            "Clear",
+                            style: TextStyle(
+                                fontFamily: 'Roboto',
+                                fontSize: 18,
+                                color: Colors.white),
+                          ),
+                        ),
+                      ),
                     ),
-                    child: Container(),
                   ),
                   SizedBox(height: 20.0),
                   InkWell(
                     onTap: () {
+                      _handleSaveButtonPressed();
                       //Navigator.push(context, SlideLeftRoute(page: Takeorder2()));
                     },
                     child: Container(
@@ -338,10 +407,61 @@ class _CustomersignState extends State<Customersign> {
                     ),
                   ),
                   SizedBox(height: 30.0),
+                  Container(child: _sign),
                 ],
               ),
             ),
           )),
     );
+  }
+
+  Future<http.Response> reSendOtp() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString("token");
+
+    Map data = {
+      "phn_number": "phn_number1",
+    };
+    var body = json.encode(data);
+
+    http.Response res = await http.post(
+      'https://www.mitrahtechnology.in/apis/mitrah-api/deliveryboy/delivered_otp.php',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        "Authorization": token
+      },
+    );
+
+    print(res.body);
+    var responseData = json.decode(res.body);
+    if (responseData['status'] == 200) {
+      Navigator.push(context, SlideLeftRoute(page: Customersign()));
+    }
+    return res;
+  }
+
+  Future<http.Response> _onDone() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString("token");
+
+    Map data = {
+      "phn_number": "phn_number1",
+    };
+    var body = json.encode(data);
+
+    http.Response res = await http.post(
+      'https://www.mitrahtechnology.in/apis/mitrah-api/deliveryboy/delivered_otp.php',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        "Authorization": token
+      },
+    );
+
+    print(res.body);
+    var responseData = json.decode(res.body);
+    if (responseData['status'] == 200) {
+      Navigator.push(context, SlideLeftRoute(page: Customersign()));
+    }
+    return res;
   }
 }

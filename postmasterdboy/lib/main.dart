@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 
 import 'package:postmasterdboy/screens/login.dart';
+import 'package:postmasterdboy/screens/orderstatus.dart';
+import 'package:postmasterdboy/screens/signature.dart';
 
 import 'Screens/Homepage.dart';
 
 import 'package:sizer/sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 void main() => runApp(Myapp());
 
@@ -24,12 +29,14 @@ class _MyappState extends State<Myapp> {
   }
 
   void autoLogIn() async {
+    //SharedPreferences.setMockInitialValues({});
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String token = prefs.getString('token');
 
     if (token != null) {
       setState(() {
         isLoggedIn = true;
+        setDuty();
       });
 
       return;
@@ -40,6 +47,21 @@ class _MyappState extends State<Myapp> {
 
       return;
     }
+  }
+
+  void setDuty() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String token = prefs.getString('token');
+
+    /*http.Response res = await http.post(
+      'https://www.mitrahtechnology.in/apis/mitrah-api/deliveryboy/active_and_not_active.php',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        "Authorization": token,
+      },
+    );*/
+
+    prefs.setBool("duty", false);
   }
 
   @override
@@ -53,14 +75,14 @@ class _MyappState extends State<Myapp> {
             //initialize SizerUtil()
             SizerUtil().init(constraints, orientation); //initialize SizerUtil
             return MaterialApp(
-              debugShowCheckedModeBanner: false,
-              title: "Postman",
-              theme: ThemeData(
-                primaryColor: Color(0xFF27DEBF),
-                dividerColor: Colors.transparent,
-              ),
-              home: isLoggedIn ? Homepage() : Login(),
-            );
+                debugShowCheckedModeBanner: false,
+                title: "Postman",
+                theme: ThemeData(
+                  primaryColor: Color(0xFF27DEBF),
+                  dividerColor: Colors.transparent,
+                ),
+                home: Orderstatus() //isLoggedIn ? Homepage() : Login(),
+                );
           },
         );
       },

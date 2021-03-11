@@ -1,3 +1,5 @@
+////No need of tghis file...............
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:io';
@@ -9,6 +11,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:postmasterdboy/Components/toast_utils.dart';
 import 'package:postmasterdboy/Components/sizes_helpers.dart';
 import 'package:flutter/material.dart';
+import 'package:postmasterdboy/screens/example.dart';
+import 'package:postmasterdboy/screens/orderstatus.dart';
 import 'package:postmasterdboy/screens/takeorder.dart';
 
 import 'package:sizer/sizer.dart';
@@ -146,7 +150,8 @@ class _ActiveordersState extends State<Activeorders> {
             ),
             InkWell(
               onTap: () {
-                Navigator.push(context, SlideLeftRoute(page: Takeorder()));
+                Navigator.pushReplacement(
+                    context, SlideLeftRoute(page: Orderstatus()));
               },
               child: Container(
                 margin: const EdgeInsets.only(left: 30.0, right: 30.0),
@@ -162,7 +167,7 @@ class _ActiveordersState extends State<Activeorders> {
                   child: Container(
                     margin: EdgeInsets.only(top: 10.0, bottom: 10.0),
                     child: Text(
-                      "Take Order",
+                      "Change Status",
                       style: TextStyle(
                           fontFamily: 'Roboto',
                           fontSize: 18,
