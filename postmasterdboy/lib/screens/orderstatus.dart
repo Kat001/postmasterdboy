@@ -24,6 +24,33 @@ import 'package:postmasterdboy/Components/animate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Orderstatus extends StatefulWidget {
+  Orderstatus({
+    Key key,
+    this.customer_name,
+    this.amount,
+    this.description,
+    this.pickupaddress,
+    this.pickuptime,
+    this.dropaddress,
+    this.droptime,
+    this.pickupdate,
+    this.dropdate,
+    this.commission,
+    this.customer_phnnumber,
+  }) : super(key: key);
+
+  final String customer_name;
+  final String description;
+  final String amount;
+  final String pickupaddress;
+  final String pickuptime;
+  final String dropaddress;
+  final String droptime;
+  final String pickupdate;
+  final String dropdate;
+  final String commission;
+  final String customer_phnnumber;
+
   @override
   _OrderstatusState createState() => _OrderstatusState();
 }
@@ -46,14 +73,13 @@ class _OrderstatusState extends State<Orderstatus> {
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget bodyData() {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
           elevation: 0,
           title: Text(
-            "Customer Name",
+            widget.customer_name,
             style: TextStyle(
               color: Colors.black,
               fontFamily: 'Roboto',
@@ -68,7 +94,7 @@ class _OrderstatusState extends State<Orderstatus> {
                     top: displayHeight(context) * 0.023,
                     right: displayWidth(context) * 0.06),
                 child: Text(
-                  "Rs. 750",
+                  "Rs. " + widget.amount,
                   style: TextStyle(
                     color: Colors.green,
                     fontFamily: 'RobotoBold',
@@ -108,8 +134,7 @@ class _OrderstatusState extends State<Orderstatus> {
                   margin: const EdgeInsets.only(top: 5, right: 10),
                   padding: const EdgeInsets.all(3.0),
                   child: Text(
-                    '''Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-Ornare leo non mollis id cursus. Eu euismod faucibus in leo ''',
+                    widget.description,
                     style: TextStyle(
                       color: Colors.black,
                       fontFamily: 'Roboto',
@@ -137,8 +162,7 @@ Ornare leo non mollis id cursus. Eu euismod faucibus in leo ''',
                         margin: const EdgeInsets.only(top: 5, right: 10),
                         padding: const EdgeInsets.all(3.0),
                         child: Text(
-                          '''Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-Ornare leo non mollis id cursus. Eu euismod faucibus in leo ''',
+                          widget.pickupaddress,
                           style: TextStyle(
                             color: Colors.black,
                             fontFamily: 'Roboto',
@@ -164,6 +188,31 @@ Ornare leo non mollis id cursus. Eu euismod faucibus in leo ''',
                   margin: const EdgeInsets.only(top: 5, right: 10),
                   padding: const EdgeInsets.all(3.0),
                   child: Text(
+                    "Pickup Date",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontFamily: 'RobotoBold',
+                      fontSize: displayWidth(context) * 0.05,
+                    ),
+                  ),
+                ),
+                new Container(
+                  margin: const EdgeInsets.only(top: 5, right: 10),
+                  padding: const EdgeInsets.all(3.0),
+                  child: Text(
+                    "widget.pickupdate",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontFamily: 'Roboto',
+                      fontSize: displayWidth(context) * 0.04,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20),
+                new Container(
+                  margin: const EdgeInsets.only(top: 5, right: 10),
+                  padding: const EdgeInsets.all(3.0),
+                  child: Text(
                     "Drop-off Location",
                     style: TextStyle(
                       color: Colors.black,
@@ -179,8 +228,7 @@ Ornare leo non mollis id cursus. Eu euismod faucibus in leo ''',
                         margin: const EdgeInsets.only(top: 5, right: 10),
                         padding: const EdgeInsets.all(3.0),
                         child: Text(
-                          '''Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-Ornare leo non mollis id cursus. Eu euismod faucibus in leo ''',
+                          widget.dropaddress,
                           style: TextStyle(
                             color: Colors.black,
                             fontFamily: 'Roboto',
@@ -295,9 +343,13 @@ Ornare leo non mollis id cursus. Eu euismod faucibus in leo ''',
                 SizedBox(height: 30.0),
                 InkWell(
                   onTap: () {
-                    //deliverNowotp();
+                    deliverNowotp();
                     Navigator.push(
-                        context, SlideLeftRoute(page: Customersign()));
+                        context,
+                        SlideLeftRoute(
+                            page: Customersign(
+                          customer_phnnumber: widget.customer_phnnumber,
+                        )));
                   },
                   child: Container(
                     margin: const EdgeInsets.only(left: 33.0, right: 33.0),
@@ -358,7 +410,7 @@ Ornare leo non mollis id cursus. Eu euismod faucibus in leo ''',
                               SizedBox(width: 30),
                               Expanded(
                                 child: Text(
-                                  "₹750",
+                                  "₹" + widget.amount,
                                   style: TextStyle(
                                     color: Colors.black,
                                     fontFamily: 'RobotoBold',
@@ -384,7 +436,7 @@ Ornare leo non mollis id cursus. Eu euismod faucibus in leo ''',
                               SizedBox(width: 30),
                               Expanded(
                                 child: Text(
-                                  "₹50",
+                                  "₹" + widget.commission,
                                   style: TextStyle(
                                     color: Colors.black,
                                     fontFamily: 'RobotoBold',
@@ -405,12 +457,24 @@ Ornare leo non mollis id cursus. Eu euismod faucibus in leo ''',
         ));
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: "Postman",
+        theme: ThemeData(
+          primaryColor: Color(0xFF27DEBF),
+          dividerColor: Colors.transparent,
+        ),
+        home: bodyData());
+  }
+
   Future<http.Response> deliverNowotp() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString("token");
 
     Map data = {
-      "phn_number": "phn_number1",
+      "phn_number": widget.customer_phnnumber,
     };
     var body = json.encode(data);
 
@@ -420,6 +484,7 @@ Ornare leo non mollis id cursus. Eu euismod faucibus in leo ''',
         'Content-Type': 'application/json; charset=UTF-8',
         "Authorization": token
       },
+      body: body,
     );
 
     print(res.body);

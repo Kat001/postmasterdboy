@@ -19,6 +19,31 @@ import 'package:postmasterdboy/Components/animate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Takeorder extends StatefulWidget {
+  Takeorder({
+    Key key,
+    this.customer_name,
+    this.amount,
+    this.description,
+    this.pickupaddress,
+    this.pickuptime,
+    this.dropaddress,
+    this.droptime,
+    this.pickupdate,
+    this.dropdate,
+    this.commission,
+  }) : super(key: key);
+
+  final String customer_name;
+  final String description;
+  final String amount;
+  final String pickupaddress;
+  final String pickuptime;
+  final String dropaddress;
+  final String droptime;
+  final String pickupdate;
+  final String dropdate;
+  final String commission;
+
   @override
   _TakeorderState createState() => _TakeorderState();
 }
@@ -31,7 +56,7 @@ class _TakeorderState extends State<Takeorder> {
           backgroundColor: Colors.white,
           elevation: 0,
           title: Text(
-            "Customer Name",
+            widget.customer_name,
             style: TextStyle(
               color: Colors.black,
               fontFamily: 'Roboto',
@@ -46,7 +71,7 @@ class _TakeorderState extends State<Takeorder> {
                     top: displayHeight(context) * 0.023,
                     right: displayWidth(context) * 0.06),
                 child: Text(
-                  "Rs. 750",
+                  "Rs. " + widget.amount,
                   style: TextStyle(
                     color: Colors.green,
                     fontFamily: 'RobotoBold',
@@ -85,8 +110,7 @@ class _TakeorderState extends State<Takeorder> {
                 margin: const EdgeInsets.only(top: 5, right: 10),
                 padding: const EdgeInsets.all(3.0),
                 child: Text(
-                  '''Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-Ornare leo non mollis id cursus. Eu euismod faucibus in leo ''',
+                  widget.description,
                   style: TextStyle(
                     color: Colors.black,
                     fontFamily: 'Roboto',
@@ -114,8 +138,7 @@ Ornare leo non mollis id cursus. Eu euismod faucibus in leo ''',
                       margin: const EdgeInsets.only(top: 5, right: 10),
                       padding: const EdgeInsets.all(3.0),
                       child: Text(
-                        '''Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-Ornare leo non mollis id cursus. Eu euismod faucibus in leo ''',
+                        widget.pickupaddress,
                         style: TextStyle(
                           color: Colors.black,
                           fontFamily: 'Roboto',
@@ -156,8 +179,7 @@ Ornare leo non mollis id cursus. Eu euismod faucibus in leo ''',
                       margin: const EdgeInsets.only(top: 5, right: 10),
                       padding: const EdgeInsets.all(3.0),
                       child: Text(
-                        '''Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-Ornare leo non mollis id cursus. Eu euismod faucibus in leo ''',
+                        widget.dropaddress,
                         style: TextStyle(
                           color: Colors.black,
                           fontFamily: 'Roboto',

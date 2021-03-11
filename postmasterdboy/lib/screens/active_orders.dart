@@ -150,8 +150,10 @@ class _ActiveordersState extends State<Activeorders> {
             ),
             InkWell(
               onTap: () {
-                Navigator.pushReplacement(
-                    context, SlideLeftRoute(page: Orderstatus()));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Orderstatus()),
+                );
               },
               child: Container(
                 margin: const EdgeInsets.only(left: 30.0, right: 30.0),

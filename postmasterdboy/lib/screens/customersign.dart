@@ -30,6 +30,12 @@ import 'package:http/http.dart' as http;
 import 'package:syncfusion_flutter_signaturepad/signaturepad.dart';
 
 class Customersign extends StatefulWidget {
+  Customersign({
+    Key key,
+    this.customer_phnnumber,
+  }) : super(key: key);
+
+  final String customer_phnnumber;
   @override
   _CustomersignState createState() => _CustomersignState();
 }
@@ -420,7 +426,7 @@ class _CustomersignState extends State<Customersign> {
     String token = prefs.getString("token");
 
     Map data = {
-      "phn_number": "phn_number1",
+      "phn_number": widget.customer_phnnumber,
     };
     var body = json.encode(data);
 

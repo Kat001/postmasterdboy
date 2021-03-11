@@ -256,7 +256,7 @@ class _LoginState extends State<Login> {
     print(responseData['token']);
     if (responseData['success'] == 1) {
       var data = responseData["delivery_boy_user_details"];
-      SharedPreferences.setMockInitialValues({});
+      //SharedPreferences.setMockInitialValues({});
       SharedPreferences prefs = await SharedPreferences.getInstance();
 
       prefs.setString('token', responseData['token']);
