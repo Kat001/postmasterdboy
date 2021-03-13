@@ -36,11 +36,6 @@ class _HomepageState extends State<Homepage> {
     Chat(),
     Information(),
   ];
-  // void onTappedBar(int index) {
-  //   setState(() {
-  //     _currentstate = index;
-  //   });
-  // }
 
   @override
   void initState() {
@@ -195,7 +190,7 @@ class _HomepageState extends State<Homepage> {
         child: SizedBox(
           height: displayHeight(context) * 0.05,
           child: BottomAppBar(
-            color: Colors.green[400], //Color(0XFF2BCDB4),
+            color: Color(0xFF2BCDB4), //Color(0XFF2BCDB4),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               mainAxisSize: MainAxisSize.max,

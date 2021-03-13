@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:postmasterdboy/screens/login.dart';
 import 'package:postmasterdboy/screens/orderstatus.dart';
 import 'package:postmasterdboy/screens/signature.dart';
+import 'package:postmasterdboy/screens/today.dart';
+import 'package:postmasterdboy/screens/week.dart';
 
 import 'Screens/Homepage.dart';
 
@@ -53,15 +55,23 @@ class _MyappState extends State<Myapp> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String token = prefs.getString('token');
 
-    /*http.Response res = await http.post(
-      'https://www.mitrahtechnology.in/apis/mitrah-api/deliveryboy/active_and_not_active.php',
+    http.Response res = await http.post(
+      'https://www.mitrahtechnology.in/apis/mitrah-api/deliveryboy/get_status.php',
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         "Authorization": token,
       },
-    );*/
+    );
 
-    prefs.setBool("duty", false);
+    print(res.body);
+    var responseData = json.decode(res.body);
+    if (responseData['status'] == 200) {
+      if (responseData['active_now'] == 1) {
+        prefs.setBool("duty", true);
+      } else {
+        prefs.setBool("duty", false);
+      }
+    }
   }
 
   @override

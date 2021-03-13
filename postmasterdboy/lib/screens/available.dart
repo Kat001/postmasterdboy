@@ -254,13 +254,15 @@ class _AvailableState extends State<Available>
                       pickupdate: listData[index]["pickup_date"],
                       dropdate: listData[index]["delivery_date"],
                       commission: listData[index]["commission"],
+                      orderId: listData[index]["id"],
+                      orderType: listData[index]["order_type"],
                     )));
               },
               child: Container(
                 margin: const EdgeInsets.only(left: 30.0, right: 30.0),
                 padding: const EdgeInsets.all(3.0),
                 decoration: BoxDecoration(
-                  color: Colors.green[400],
+                  color: Color(0xFF2BCDB4),
                   //border: Border.all(color: Colors.blueAccent),
                   borderRadius: const BorderRadius.all(
                     const Radius.circular(30.0),
@@ -393,13 +395,15 @@ class _AvailableState extends State<Available>
                       dropdate: listData[index]["delivery_date"],
                       commission: listData[index]["commission"],
                       customer_phnnumber: listData[index]["contact_number"],
+                      orderId: listData[index]["id"],
+                      orderType: listData[index]["order_type"],
                     )));
               },
               child: Container(
                 margin: const EdgeInsets.only(left: 30.0, right: 30.0),
                 padding: const EdgeInsets.all(3.0),
                 decoration: BoxDecoration(
-                  color: Colors.green[400],
+                  color: Color(0xFF2BCDB4),
                   //border: Border.all(color: Colors.blueAccent),
                   borderRadius: const BorderRadius.all(
                     const Radius.circular(30.0),
@@ -535,7 +539,7 @@ class _AvailableState extends State<Available>
                 margin: const EdgeInsets.only(left: 30.0, right: 30.0),
                 padding: const EdgeInsets.all(3.0),
                 decoration: BoxDecoration(
-                  color: Colors.green[400],
+                  color: Color(0xFF2BCDB4),
                   //border: Border.all(color: Colors.blueAccent),
                   borderRadius: const BorderRadius.all(
                     const Radius.circular(30.0),
@@ -573,9 +577,9 @@ class _AvailableState extends State<Available>
               /*onTap: (index) {
                 print(_tabController.index);
               },*/
-              //indicatorColor: Colors.green[400],
+              //indicatorColor: Color(0xFF2BCDB4),
               //indicator: BoxDecoration(
-              //color: Colors.green[400],
+              //color: Color(0xFF2BCDB4),
               //borderRadius: BorderRadius.circular(15),
               //),
               tabs: [
@@ -641,7 +645,7 @@ class _AvailableState extends State<Available>
                                         (BuildContext context, int index) {
                                       return orderWidget(
                                         index,
-                                        orderShop[index]["shop_order_id"],
+                                        orderShop[index]["id"],
                                         orderShop[index]["pickup_address"],
                                         orderShop[index]["delivery_address"],
                                         orderShop,
@@ -705,7 +709,7 @@ class _AvailableState extends State<Available>
                                         (BuildContext context, int index) {
                                       return orderWidgetActive(
                                         index,
-                                        orderShopActive[index]["shop_order_id"],
+                                        orderShopActive[index]["id"],
                                         orderShopActive[index]
                                             ["pickup_address"],
                                         orderShopActive[index]
@@ -771,8 +775,7 @@ class _AvailableState extends State<Available>
                                         (BuildContext context, int index) {
                                       return orderWidgetComplete(
                                         index,
-                                        orderShopComplete[index]
-                                            ["shop_order_id"],
+                                        orderShopComplete[index]["id"],
                                         orderShopComplete[index]
                                             ["pickup_address"],
                                         orderShopComplete[index]

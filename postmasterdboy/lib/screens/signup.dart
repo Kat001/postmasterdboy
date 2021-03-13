@@ -351,7 +351,7 @@ class _SignupState extends State<Signup> {
                     margin: const EdgeInsets.only(left: 33.0, right: 33.0),
                     padding: const EdgeInsets.all(3.0),
                     decoration: BoxDecoration(
-                      color: Colors.green[400],
+                      color: Color(0xFF2BCDB4),
                       //border: Border.all(color: Colors.blueAccent),
                       borderRadius: const BorderRadius.all(
                         const Radius.circular(30.0),
@@ -393,7 +393,7 @@ class _SignupState extends State<Signup> {
                           " Login",
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                              color: Colors.green[400],
+                              color: Color(0xFF2BCDB4),
                               fontSize: 16.0,
                               fontFamily: 'Roboto'),
                         ),

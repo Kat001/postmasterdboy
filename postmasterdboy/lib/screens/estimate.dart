@@ -35,11 +35,7 @@ class _EstimateState extends State<Estimate> {
               bottom: PreferredSize(
                   child: TabBar(
                       isScrollable: true,
-                      indicatorColor: Colors.green[400],
-                      indicator: BoxDecoration(
-                        color: Colors.green[400],
-                        borderRadius: BorderRadius.circular(15),
-                      ),
+                      indicatorColor: Color(0xFF2BCDB4),
                       unselectedLabelColor: Color(0xFF465A64),
                       tabs: [
                         Tab(
@@ -134,9 +130,9 @@ class _EstimateState extends State<Estimate> {
 
 bottom: TabBar(
                 onTap: (index) {},
-                indicatorColor: Colors.green[400],
+                indicatorColor: Color(0xFF2BCDB4),
                 indicator: BoxDecoration(
-                  color: Colors.green[400],
+                  color: Color(0xFF2BCDB4),
                   borderRadius: BorderRadius.circular(15),
                 ),
                 tabs: [

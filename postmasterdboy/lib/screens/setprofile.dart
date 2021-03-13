@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:postmasterdboy/Components/sizes_helpers.dart';
+import 'package:postmasterdboy/screens/profile.dart';
 import 'package:postmasterdboy/screens/resetpassword.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:email_validator/email_validator.dart';
@@ -253,7 +254,7 @@ class _SetprofileState extends State<Setprofile> {
                   margin: const EdgeInsets.only(left: 33.0, right: 33.0),
                   padding: const EdgeInsets.all(3.0),
                   decoration: BoxDecoration(
-                    color: Colors.green[400],
+                    color: Color(0xFF2BCDB4),
                     //border: Border.all(color: Colors.blueAccent),
                     borderRadius: const BorderRadius.all(
                       const Radius.circular(30.0),
@@ -349,7 +350,7 @@ class _SetprofileState extends State<Setprofile> {
         builder: (context) =>
             CustomDialog("Success", responseData['message'], "Okay", 2),
       );
-      //Navigator.push(context, SlideLeftRoute(page: Profile()));
+      Navigator.push(context, SlideLeftRoute(page: Profile()));
     } else if (responseData['status'] == 500) {
       showDialog(
           context: context,

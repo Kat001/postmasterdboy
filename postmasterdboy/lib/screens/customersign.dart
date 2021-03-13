@@ -60,6 +60,7 @@ class _CustomersignState extends State<Customersign> {
   @override
   void initState() {
     super.initState();
+    deliverNowotp();
     pin2FocusNode = FocusNode();
     pin3FocusNode = FocusNode();
     pin4FocusNode = FocusNode();
@@ -392,7 +393,7 @@ class _CustomersignState extends State<Customersign> {
                       margin: const EdgeInsets.only(left: 20.0, right: 20.0),
                       padding: const EdgeInsets.all(3.0),
                       decoration: BoxDecoration(
-                        color: Colors.green[400],
+                        color: Color(0xFF2BCDB4),
                         //border: Border.all(color: Colors.blueAccent),
                         borderRadius: const BorderRadius.all(
                           const Radius.circular(20.0),
@@ -468,6 +469,30 @@ class _CustomersignState extends State<Customersign> {
     if (responseData['status'] == 200) {
       Navigator.push(context, SlideLeftRoute(page: Customersign()));
     }
+    return res;
+  }
+
+  Future<http.Response> deliverNowotp() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString("token");
+
+    Map data = {
+      "phn_number": widget.customer_phnnumber,
+    };
+    var body = json.encode(data);
+
+    http.Response res = await http.post(
+      'https://www.mitrahtechnology.in/apis/mitrah-api/deliveryboy/delivered_otp.php',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        "Authorization": token
+      },
+      body: body,
+    );
+
+    print(res.body);
+    var responseData = json.decode(res.body);
+    if (responseData['status'] == 200) {}
     return res;
   }
 }

@@ -9,6 +9,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:postmasterdboy/Components/toast_utils.dart';
 import 'package:postmasterdboy/Components/sizes_helpers.dart';
 import 'package:postmasterdboy/screens/available.dart';
+import 'package:postmasterdboy/screens/homepage.dart';
 import 'package:postmasterdboy/screens/information.dart';
 import 'package:postmasterdboy/screens/orderstatus.dart';
 import 'package:postmasterdboy/screens/setprofile.dart';
@@ -17,6 +18,10 @@ import 'package:postmasterdboy/screens/available.dart';
 import 'package:postmasterdboy/Components/customicons.dart';
 import 'package:postmasterdboy/Components/animate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:flutter/services.dart';
 
 class Takeorder extends StatefulWidget {
   Takeorder({
@@ -31,6 +36,8 @@ class Takeorder extends StatefulWidget {
     this.pickupdate,
     this.dropdate,
     this.commission,
+    this.orderId,
+    this.orderType,
   }) : super(key: key);
 
   final String customer_name;
@@ -43,6 +50,8 @@ class Takeorder extends StatefulWidget {
   final String pickupdate;
   final String dropdate;
   final String commission;
+  final String orderId;
+  final String orderType;
 
   @override
   _TakeorderState createState() => _TakeorderState();
@@ -203,13 +212,13 @@ class _TakeorderState extends State<Takeorder> {
               SizedBox(height: 30.0),
               InkWell(
                 onTap: () {
-                  //Navigator.push(context, SlideLeftRoute(page: Takeorder2()));
+                  takeOrder();
                 },
                 child: Container(
                   margin: const EdgeInsets.only(left: 33.0, right: 33.0),
                   padding: const EdgeInsets.all(3.0),
                   decoration: BoxDecoration(
-                    color: Colors.green[400],
+                    color: Color(0xFF2BCDB4),
                     //border: Border.all(color: Colors.blueAccent),
                     borderRadius: const BorderRadius.all(
                       const Radius.circular(20.0),
@@ -308,5 +317,44 @@ class _TakeorderState extends State<Takeorder> {
             ],
           ),
         ));
+  }
+
+  Future<http.Response> takeOrder() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString("token");
+
+    Map data = {
+      "order_id": widget.orderId,
+      "order_type": widget.orderType,
+      "order_status": "active",
+    };
+
+    var body = json.encode(data);
+
+    http.Response res = await http.post(
+      'https://www.mitrahtechnology.in/apis/mitrah-api/deliveryboy/order_progress.php',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': token,
+      },
+      body: body,
+    );
+
+    print(res.body);
+    var responseData = json.decode(res.body);
+    if (responseData['status'] == 200) {
+      showDialog(
+        context: context,
+        builder: (context) =>
+            CustomDialog("Success", responseData['message'], "Okay", 2),
+      );
+      Navigator.push(context, SlideLeftRoute(page: Homepage()));
+    } else {
+      showDialog(
+          context: context,
+          builder: (context) =>
+              CustomDialogError("Error", responseData['message'], "Cancel"));
+    }
+    return res;
   }
 }

@@ -159,7 +159,7 @@ class _ActiveordersState extends State<Activeorders> {
                 margin: const EdgeInsets.only(left: 30.0, right: 30.0),
                 padding: const EdgeInsets.all(3.0),
                 decoration: BoxDecoration(
-                  color: Colors.green[400],
+                  color: Color(0xFF2BCDB4),
                   //border: Border.all(color: Colors.blueAccent),
                   borderRadius: const BorderRadius.all(
                     const Radius.circular(30.0),

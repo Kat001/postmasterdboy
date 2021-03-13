@@ -10,9 +10,18 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dio/dio.dart';
+import 'dart:typed_data';
+import 'dart:io';
+import 'package:flutter/services.dart';
+
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
+import 'dart:async';
 
 import 'package:postmasterdboy/Components/toast_utils.dart';
 import 'package:postmasterdboy/Components/animate.dart';
+import 'package:postmasterdboy/models/utility.dart';
+import 'package:path_provider/path_provider.dart';
 
 class Bankdetail extends StatefulWidget {
   @override
@@ -30,7 +39,25 @@ class _BankdetailState extends State<Bankdetail> {
   final TextEditingController branchNameController = TextEditingController();
 
   File _selectedFile;
+  Image cheakImage;
   bool _inProcess = false;
+
+  @override
+  void initState() {
+    super.initState();
+    /*try {
+      Utility.getImageFromPrefrences("cancel_cheque_image").then((img) {
+        if (img == null) {
+        } else {
+          setState(() async {
+            cheakImage = Utility.imageFromBase64String(img);
+          });
+        }
+      });
+    } catch (e) {
+      print(e);
+    }*/
+  }
 
   Widget getImageWidget() {
     if (_selectedFile != null) {
@@ -357,7 +384,7 @@ class _BankdetailState extends State<Bankdetail> {
                         left: 190.0, right: 33.0, bottom: 5.0),
                     padding: const EdgeInsets.all(3.0),
                     decoration: BoxDecoration(
-                      color: Colors.green[400],
+                      color: Color(0xFF2BCDB4),
                       //border: Border.all(color: Colors.blueAccent),
                       borderRadius: const BorderRadius.all(
                         const Radius.circular(30.0),
@@ -399,7 +426,7 @@ class _BankdetailState extends State<Bankdetail> {
                     margin: const EdgeInsets.only(left: 33.0, right: 33.0),
                     padding: const EdgeInsets.all(3.0),
                     decoration: BoxDecoration(
-                      color: Colors.green[400],
+                      color: Color(0xFF2BCDB4),
                       //border: Border.all(color: Colors.blueAccent),
                       borderRadius: const BorderRadius.all(
                         const Radius.circular(30.0),
@@ -456,6 +483,8 @@ class _BankdetailState extends State<Bankdetail> {
         .then((response) {
       var jsonResponse = jsonDecode(response.toString());
       if (jsonResponse['status'] == 200) {
+        //Utility.saveImageToPreferences("cancel_cheque_image",
+        //  Utility.base64String(_selectedFile.readAsBytesSync()));
         showDialog(
           context: context,
           builder: (context) =>
@@ -467,29 +496,6 @@ class _BankdetailState extends State<Bankdetail> {
             builder: (context) =>
                 CustomDialogError("Error", jsonResponse['message'], "Cancel"));
       }
-      // var testData = jsonResponse['histogram_counts'].cast<double>();
-      // var averageGrindSize = jsonResponse['average_particle_size'];
     }).catchError((error) => print(error));
-
-    /*print(res.body);
-    var responseData = json.decode(res.body);
-    if (responseData['status'] == 200) {
-      showDialog(
-        context: context,
-        builder: (context) =>
-            CustomDialog("Success", responseData['message'], "Okay", 2),
-      );
-      //Navigator.push(context, SlideLeftRoute(page: Profile()));
-    } else if (responseData['status'] == 500) {
-      showDialog(
-          context: context,
-          builder: (context) =>
-              CustomDialogError("Error", "User already Exists", "Cancel"));
-    } else {
-      showDialog(
-          context: context,
-          builder: (context) =>
-              CustomDialogError("Error", responseData['message'], "Cancel"));
-    }*/
   }
 }
