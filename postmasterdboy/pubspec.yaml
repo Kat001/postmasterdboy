@@ -41,6 +41,7 @@ dependencies:
   path_provider:
   #flutter_signature_pad: ^2.0.3
   syncfusion_flutter_signaturepad: ^18.4.47-beta
+  flutter_uploader: ^1.2.1
 
   #social_share: ^2.0.5
 
@@ -69,6 +70,7 @@ flutter:
   assets:
     - assets/images/
     - assets/placeholder.jpg
+    - assets/sign.tmp
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

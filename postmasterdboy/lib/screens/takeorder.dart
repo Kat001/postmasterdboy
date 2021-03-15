@@ -343,12 +343,12 @@ class _TakeorderState extends State<Takeorder> {
     print(res.body);
     var responseData = json.decode(res.body);
     if (responseData['status'] == 200) {
+      Navigator.push(context, SlideLeftRoute(page: Homepage()));
       showDialog(
         context: context,
         builder: (context) =>
-            CustomDialog("Success", responseData['message'], "Okay", 2),
+            CustomDialog("Success", responseData['message'], "Okay", 3),
       );
-      Navigator.push(context, SlideLeftRoute(page: Homepage()));
     } else {
       showDialog(
           context: context,

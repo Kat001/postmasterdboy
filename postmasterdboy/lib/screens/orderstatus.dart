@@ -47,7 +47,7 @@ class Orderstatus extends StatefulWidget {
 }
 
 class _OrderstatusState extends State<Orderstatus> {
-  int _radioValue = 10;
+  int _radioValue;
   bool _isdata = false;
 
   @override
@@ -77,7 +77,7 @@ class _OrderstatusState extends State<Orderstatus> {
     var responseData = json.decode(res.body);
     if (responseData['status'] == 200) {
       setState(() {
-        _radioValue = int.parse(responseData["order_status"]);
+        _radioValue = int.parse(responseData["order_status"]) - 1;
         _isdata = true;
       });
     }
@@ -85,15 +85,29 @@ class _OrderstatusState extends State<Orderstatus> {
   }
 
   void _handleRadioValueChange(int value) {
-    if (value == 1) {
+    print("khfkjdshfkjdshfkjdshfkdshfkjdfhkjdfdkjfhdkfdkjfdkjf" +
+        value.toString());
+    if (value == 0) {
+      changeStatus("active");
+      setState(() {
+        _radioValue = value;
+      });
+    } else if (value == 1) {
       changeStatus("picked");
-    }
-    if (value == 2) {
+      setState(() {
+        _radioValue = value;
+      });
+    } else if (value == 2) {
       changeStatus("ontheway");
+      setState(() {
+        _radioValue = value;
+      });
     }
 
-    setState(() {
-      _radioValue = value;
+    /* setState(() {
+      setState(() {
+        _radioValue = value;
+      });
 
       switch (_radioValue) {
         case 0:
@@ -103,7 +117,7 @@ class _OrderstatusState extends State<Orderstatus> {
         case 2:
           break;
       }
-    });
+    });*/
   }
 
   @override
@@ -322,6 +336,7 @@ class _OrderstatusState extends State<Orderstatus> {
                               onTap: () {
                                 setState(() {
                                   _radioValue = 0;
+                                  changeStatus("active");
                                 });
                               },
                               child: new Text(
@@ -342,6 +357,7 @@ class _OrderstatusState extends State<Orderstatus> {
                               onTap: () {
                                 setState(() {
                                   _radioValue = 1;
+                                  changeStatus("picked");
                                 });
                               },
                               child: new Text(
@@ -364,6 +380,7 @@ class _OrderstatusState extends State<Orderstatus> {
                               onTap: () {
                                 setState(() {
                                   _radioValue = 2;
+                                  changeStatus("ontheway");
                                 });
                               },
                               child: new Text(
@@ -379,7 +396,13 @@ class _OrderstatusState extends State<Orderstatus> {
                     InkWell(
                       onTap: () {
                         Navigator.push(
-                            context, SlideLeftRoute(page: Customersign()));
+                            context,
+                            SlideLeftRoute(
+                                page: Customersign(
+                              customer_phnnumber: widget.customer_phnnumber,
+                              orderId: widget.orderId,
+                              orderType: widget.orderType,
+                            )));
                       },
                       child: Container(
                         margin: const EdgeInsets.only(left: 33.0, right: 33.0),
@@ -531,7 +554,7 @@ class _OrderstatusState extends State<Orderstatus> {
         builder: (context) =>
             CustomDialog("Success", responseData['message'], "Okay", 2),
       );
-      Navigator.push(context, SlideLeftRoute(page: Homepage()));
+      //Navigator.push(context, SlideLeftRoute(page: Homepage()));
     } else {
       showDialog(
           context: context,

@@ -235,7 +235,7 @@ class _AvailableState extends State<Available>
             SizedBox(
               height: 15.0,
             ),
-            InkWell(
+            /*InkWell(
               onTap: () {
                 print(listData);
                 Navigator.push(
@@ -258,16 +258,40 @@ class _AvailableState extends State<Available>
                       orderType: listData[index]["order_type"],
                     )));
               },
-              child: Container(
-                margin: const EdgeInsets.only(left: 30.0, right: 30.0),
-                padding: const EdgeInsets.all(3.0),
-                decoration: BoxDecoration(
-                  color: Color(0xFF2BCDB4),
-                  //border: Border.all(color: Colors.blueAccent),
-                  borderRadius: const BorderRadius.all(
-                    const Radius.circular(30.0),
+              child: RaisedButton(
+                onPressed: () {},
+                child: Container(
+                  margin: const EdgeInsets.only(left: 30.0, right: 30.0),
+                  padding: const EdgeInsets.all(3.0),
+                  decoration: BoxDecoration(
+                    color: Color(0xFF2BCDB4),
+                    //border: Border.all(color: Colors.blueAccent),
+                    borderRadius: const BorderRadius.all(
+                      const Radius.circular(30.0),
+                    ),
+                  ),
+                  child: Center(
+                    child: Container(
+                      margin: EdgeInsets.only(top: 10.0, bottom: 10.0),
+                      child: Text(
+                        "Take Order",
+                        style: TextStyle(
+                            fontFamily: 'Roboto',
+                            fontSize: 18,
+                            color: Colors.white),
+                      ),
+                    ),
                   ),
                 ),
+              ),
+            ),*/
+            Container(
+              margin: EdgeInsets.only(left: 50.0, right: 50.0),
+              child: FlatButton(
+                shape: new RoundedRectangleBorder(
+                  borderRadius: new BorderRadius.circular(20.0),
+                ),
+                color: Color(0xFF2BCDB4),
                 child: Center(
                   child: Container(
                     margin: EdgeInsets.only(top: 10.0, bottom: 10.0),
@@ -280,6 +304,27 @@ class _AvailableState extends State<Available>
                     ),
                   ),
                 ),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      SlideLeftRoute(
+                          page: Takeorder(
+                        customer_name: listData[index]["first_name"] +
+                            " " +
+                            listData[index]["last_name"],
+                        amount: listData[index]["order_total"],
+                        description: listData[index]["comment"],
+                        pickupaddress: listData[index]["pickup_address"],
+                        pickuptime: listData[index]["pickup_time"],
+                        dropaddress: listData[index]["delivery_address"],
+                        droptime: listData[index]["delivery_time"],
+                        pickupdate: listData[index]["pickup_date"],
+                        dropdate: listData[index]["delivery_date"],
+                        commission: listData[index]["commission"],
+                        orderId: listData[index]["id"],
+                        orderType: listData[index]["order_type"],
+                      )));
+                },
               ),
             ),
           ],
@@ -375,7 +420,50 @@ class _AvailableState extends State<Available>
             SizedBox(
               height: 15.0,
             ),
-            InkWell(
+            Container(
+              margin: EdgeInsets.only(left: 50.0, right: 50.0),
+              child: FlatButton(
+                shape: new RoundedRectangleBorder(
+                  borderRadius: new BorderRadius.circular(20.0),
+                ),
+                color: Color(0xFF2BCDB4),
+                child: Center(
+                  child: Container(
+                    margin: EdgeInsets.only(top: 10.0, bottom: 10.0),
+                    child: Text(
+                      "Change Status",
+                      style: TextStyle(
+                          fontFamily: 'Roboto',
+                          fontSize: 18,
+                          color: Colors.white),
+                    ),
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      SlideLeftRoute(
+                          page: Orderstatus(
+                        customer_name: listData[index]["first_name"] +
+                            " " +
+                            listData[index]["last_name"],
+                        amount: listData[index]["order_total"],
+                        description: listData[index]["comment"],
+                        pickupaddress: listData[index]["pickup_address"],
+                        pickuptime: listData[index]["pickup_time"],
+                        dropaddress: listData[index]["delivery_address"],
+                        droptime: listData[index]["delivery_time"],
+                        pickupdate: listData[index]["pickup_date"],
+                        dropdate: listData[index]["delivery_date"],
+                        commission: listData[index]["commission"],
+                        customer_phnnumber: listData[index]["contact_number"],
+                        orderId: listData[index]["id"],
+                        orderType: listData[index]["order_type"],
+                      )));
+                },
+              ),
+            ),
+            /*InkWell(
               onTap: () {
                 print(listData);
                 Navigator.push(
@@ -422,7 +510,7 @@ class _AvailableState extends State<Available>
                   ),
                 ),
               ),
-            ),
+            ),*/
           ],
         ),
       ),

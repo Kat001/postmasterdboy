@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:postmasterdboy/screens/customersign.dart';
 
 import 'package:postmasterdboy/screens/login.dart';
 import 'package:postmasterdboy/screens/orderstatus.dart';
@@ -27,11 +28,11 @@ class _MyappState extends State<Myapp> {
   @override
   void initState() {
     super.initState();
+
     autoLogIn();
   }
 
   void autoLogIn() async {
-    //SharedPreferences.setMockInitialValues({});
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String token = prefs.getString('token');
 

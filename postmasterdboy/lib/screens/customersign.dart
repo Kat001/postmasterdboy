@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'dart:io' as Io;
 
 import 'package:flutter/cupertino.dart';
 import 'dart:io';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter_uploader/flutter_uploader.dart';
 
 import 'package:postmasterdboy/Components/toast_utils.dart';
 import 'package:postmasterdboy/Components/sizes_helpers.dart';
@@ -26,6 +29,7 @@ import 'package:flutter/foundation.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
 
 import 'package:syncfusion_flutter_signaturepad/signaturepad.dart';
 
@@ -33,9 +37,13 @@ class Customersign extends StatefulWidget {
   Customersign({
     Key key,
     this.customer_phnnumber,
+    this.orderId,
+    this.orderType,
   }) : super(key: key);
 
   final String customer_phnnumber;
+  final String orderId;
+  final String orderType;
   @override
   _CustomersignState createState() => _CustomersignState();
 }
@@ -56,16 +64,19 @@ class _CustomersignState extends State<Customersign> {
   final TextEditingController _sixthController = TextEditingController();
 
   Image _sign;
+  File uploadFile; //= Io.File("file_01.tmp");
+  Future<File> img;
 
   @override
   void initState() {
     super.initState();
-    deliverNowotp();
+    //deliverNowotp();
     pin2FocusNode = FocusNode();
     pin3FocusNode = FocusNode();
     pin4FocusNode = FocusNode();
     pin5FocusNode = FocusNode();
     pin6FocusNode = FocusNode();
+    //uploadFile.writeAsStringSync('');
   }
 
   @override
@@ -86,13 +97,56 @@ class _CustomersignState extends State<Customersign> {
 
   void _handleClearButtonPressed() {
     signatureGlobalKey.currentState.clear();
+    setState(() {
+      uploadFile = null;
+      deleteFile();
+    });
   }
 
   void _handleSaveButtonPressed() async {
     final data = await signatureGlobalKey.currentState.toImage(pixelRatio: 3.0);
     final bytes = await data.toByteData(format: ui.ImageByteFormat.png);
+    var savedDir = await getApplicationDocumentsDirectory();
+    String appDocPath = savedDir.path;
+
     if (data != null) {
-      _sign = Image.memory(bytes.buffer.asUint8List());
+      setState(() {
+        _sign = Image.memory(bytes.buffer.asUint8List());
+      });
+
+      writeToFile(bytes).then((value) {
+        setState(() {
+          uploadFile = value;
+        });
+      });
+
+      if (uploadFile == null) {
+        print("Null hi hai bhai");
+      } else {
+        print("na deta hai");
+      }
+    }
+  }
+
+  Future<File> writeToFile(ByteData data) async {
+    final buffer = data.buffer;
+    Directory tempDir = await getTemporaryDirectory();
+    String tempPath = tempDir.path;
+    var filePath =
+        tempPath + '/file_01.tmp'; // file_01.tmp is dump file, can be anything
+    return new File(filePath).writeAsBytes(
+      buffer.asUint8List(data.offsetInBytes, data.lengthInBytes),
+    );
+  }
+
+  Future<int> deleteFile() async {
+    try {
+      Directory tempDir = await getTemporaryDirectory();
+      String tempPath = tempDir.path;
+      var filePath = tempPath + '/file_01.tmp';
+      File(filePath).delete();
+    } catch (e) {
+      return 0;
     }
   }
 
@@ -305,7 +359,7 @@ class _CustomersignState extends State<Customersign> {
                   Center(
                       child: InkWell(
                     onTap: () {
-                      reSendOtp();
+                      //deliverNowotp();
                     },
                     child: Text(
                       "Resend",
@@ -354,32 +408,24 @@ class _CustomersignState extends State<Customersign> {
                             decoration: BoxDecoration(
                                 border: Border.all(color: Colors.grey)))),
                   ),
-                  InkWell(
-                    onTap: () {
-                      _handleClearButtonPressed();
-                    },
-                    child: Container(
-                      margin: const EdgeInsets.only(
-                          left: 190.0, right: 33.0, bottom: 5.0),
-                      padding: const EdgeInsets.all(3.0),
-                      decoration: BoxDecoration(
+                  Container(
+                    margin: EdgeInsets.only(right: 20.0),
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: RaisedButton(
+                        onPressed: () {
+                          _handleClearButtonPressed();
+                        },
+                        shape: RoundedRectangleBorder(
+                            borderRadius: new BorderRadius.circular(30.0)),
+                        child: Text(
+                          "Clear",
+                          style: TextStyle(
+                              fontFamily: 'Roboto',
+                              fontSize: 18,
+                              color: Colors.white),
+                        ),
                         color: Colors.red,
-                        //border: Border.all(color: Colors.blueAccent),
-                        borderRadius: const BorderRadius.all(
-                          const Radius.circular(30.0),
-                        ),
-                      ),
-                      child: Center(
-                        child: Container(
-                          margin: EdgeInsets.only(top: 12.0, bottom: 12.0),
-                          child: Text(
-                            "Clear",
-                            style: TextStyle(
-                                fontFamily: 'Roboto',
-                                fontSize: 18,
-                                color: Colors.white),
-                          ),
-                        ),
                       ),
                     ),
                   ),
@@ -387,6 +433,7 @@ class _CustomersignState extends State<Customersign> {
                   InkWell(
                     onTap: () {
                       _handleSaveButtonPressed();
+                      _onDone();
                       //Navigator.push(context, SlideLeftRoute(page: Takeorder2()));
                     },
                     child: Container(
@@ -414,7 +461,19 @@ class _CustomersignState extends State<Customersign> {
                     ),
                   ),
                   SizedBox(height: 30.0),
-                  Container(child: _sign),
+                  Container(
+                    child: uploadFile == null
+                        ? Text("null hai")
+                        : Image.file(
+                            uploadFile,
+                            width: 250,
+                            height: 250,
+                            fit: BoxFit.cover,
+                          ),
+                  ),
+                  Container(
+                    child: _sign == null ? Text("null hai") : _sign,
+                  ),
                 ],
               ),
             ),
@@ -422,77 +481,83 @@ class _CustomersignState extends State<Customersign> {
     );
   }
 
-  Future<http.Response> reSendOtp() async {
+  void _onDone() async {
+    String code = _firstController.text +
+        _secondController.text +
+        _thirdController.text +
+        _fourthController.text +
+        _fifthController.text +
+        _sixthController.text;
     SharedPreferences prefs = await SharedPreferences.getInstance();
+
     String token = prefs.getString("token");
+    print(token);
+    Dio dio = new Dio();
 
-    Map data = {
-      "phn_number": widget.customer_phnnumber,
-    };
-    var body = json.encode(data);
+    FormData data = FormData.fromMap({
+      "sign": await MultipartFile.fromFile(
+        uploadFile.path,
+        filename: uploadFile.path.split('/').last,
+      ),
+    });
 
-    http.Response res = await http.post(
+    dio.options.headers["Authorization"] = token;
+    dio.options.headers["phn_number"] = widget.customer_phnnumber;
+    dio.options.headers["otp"] = code;
+    dio.options.headers["order_id"] = widget.orderId;
+    dio.options.headers["branch"] = widget.orderType;
+
+    dio
+        .post(
       'https://www.mitrahtechnology.in/apis/mitrah-api/deliveryboy/delivered_otp.php',
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        "Authorization": token
-      },
-    );
-
-    print(res.body);
-    var responseData = json.decode(res.body);
-    if (responseData['status'] == 200) {
-      Navigator.push(context, SlideLeftRoute(page: Customersign()));
-    }
-    return res;
-  }
-
-  Future<http.Response> _onDone() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String token = prefs.getString("token");
-
-    Map data = {
-      "phn_number": "phn_number1",
-    };
-    var body = json.encode(data);
-
-    http.Response res = await http.post(
-      'https://www.mitrahtechnology.in/apis/mitrah-api/deliveryboy/delivered_otp.php',
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        "Authorization": token
-      },
-    );
-
-    print(res.body);
-    var responseData = json.decode(res.body);
-    if (responseData['status'] == 200) {
-      Navigator.push(context, SlideLeftRoute(page: Customersign()));
-    }
-    return res;
+      data: data,
+    )
+        .then((response) {
+      var jsonResponse = jsonDecode(response.toString());
+      if (jsonResponse['status'] == 200) {
+        //Utility.saveImageToPreferences("cancel_cheque_image",
+        //  Utility.base64String(_selectedFile.readAsBytesSync()));
+        showDialog(
+          context: context,
+          builder: (context) =>
+              CustomDialog("Success", jsonResponse['message'], "Okay", 2),
+        );
+      } else {
+        showDialog(
+            context: context,
+            builder: (context) =>
+                CustomDialogError("Error", jsonResponse['message'], "Cancel"));
+      }
+    }).catchError((error) => print(error));
   }
 
   Future<http.Response> deliverNowotp() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString("token");
 
-    Map data = {
-      "phn_number": widget.customer_phnnumber,
-    };
+    Map data = {};
     var body = json.encode(data);
 
     http.Response res = await http.post(
       'https://www.mitrahtechnology.in/apis/mitrah-api/deliveryboy/delivered_otp.php',
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
-        "Authorization": token
+        "Authorization": token,
+        "phn_number": widget.customer_phnnumber,
       },
-      body: body,
     );
 
     print(res.body);
     var responseData = json.decode(res.body);
     if (responseData['status'] == 200) {}
     return res;
+  }
+}
+
+class DateUtil {
+  String signformattedDate() {
+    DateTime now = new DateTime.now();
+
+    return now.toString();
   }
 }
